@@ -27,10 +27,10 @@
         <h3>Links Rápidos</h3>
         <ul>
           <li><a href="/">Início</a></li>
-          <li><a href="/professor">Área do Professor</a></li>
-          <li><a href="/aluno">Área do Aluno</a></li>
-          <li><a href="/professor/login">Login Professor</a></li>
-          <li><a href="/aluno/login">Login Aluno</a></li>
+          <li><a href="/loginProfessor">Área do Professor</a></li>
+          <li><a href="/loginAluno">Área do Aluno</a></li>
+          <li><a href="/loginProfessor">Login Professor</a></li>
+          <li><a href="/loginAluno">Login Aluno</a></li>
         </ul>
       </div>
 

@@ -1,0 +1,748 @@
+/* ========================== */
+/* ===== ESTILO GERAL ======= */
+/* ========================== */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #0b001d;
+  color: white;
+  overflow-x: hidden;
+  
+  
+}
+
+.hero{
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: black;
+  color: white;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 120px; /* altura do gradiente */
+  background: linear-gradient(to bottom, black 0%, #0b001d 90%);
+  /* ajuste a cor final (#0b0028) para combinar com a próxima seção */
+  z-index: 2;
+}
+
+/* 🔹 Canvas do efeito */
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+  
+  .hero-container {
+    display: grid;
+    position: absolute;
+    grid-template-columns: 1fr 350px; /* Duas colunas para texto e botões */
+    top: 50%;
+    left: 5%; /* Alinhamento à esquerda com margem */
+    transform: translateY(-50%); /* Remova o -50% em X para manter alinhado à esquerda */
+    text-align: left; /* Alinha o texto à esquerda */
+    z-index: 10;
+    max-width: 1200px;
+    padding: 5px;
+  }
+  
+  .hero-textos {
+    z-index: 2; 
+  }
+  
+  .hero-carousel {
+  padding-left: 20px;
+  padding-bottom: 15px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+}
+
+  /* 🔹 Título */
+  .hero-container h1 {
+    font-size: 48px;
+    font-weight: bold;
+    margin: 0;
+    color: #ffffff;
+    text-shadow: 0 0 20px rgba(153, 0, 255, 0.6); /* Glow roxo */
+  }
+  
+  /* 🔹 Subtítulo */
+  .hero-container h2 {
+    font-size: 42px;
+    font-weight: 700;
+    margin: 10px 0 20px;
+    color: #d54dff; /* Azul neon */
+    text-shadow: 0 0 15px rgba(193, 73, 248, 0.7);
+  }
+  
+  /* 🔹 Texto explicativo */
+  .hero-container p {
+    font-size: 18px;
+    color: #d0d0d0;
+    line-height: 1.6;
+    margin-bottom: 30px;
+  }
+  
+  /* 🔹 Botões container */
+  .buttons {
+    
+    gap: 15px;
+  }
+  
+  /* 🔹 Base dos botões */
+  .btn {
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-block;
+  }
+  
+  /* 🔹 Botão "Começar a aprender" (roxo/azul neon circuito) */
+  .btn.primary {
+    background: transparent;
+    border: 2px solid #9d4dff; /* Roxo neon */
+    color: #9d4dff;
+    box-shadow: 0 0 10px rgba(157, 77, 255, 0.5);
+    margin-right: 40;
+  }
+  
+  .btn.primary:hover {
+    background: rgba(157, 77, 255, 0.1);
+    box-shadow:
+      0 0 15px rgba(157, 77, 255, 0.7),
+      0 0 35px rgba(157, 77, 255, 0.5),
+      0 0 55px rgba(77, 166, 255, 0.3);
+    transform: scale(1.05);
+  }
+  
+  /* 🔹 Botão "Conhecer a plataforma" (clean com detalhe azul) */
+  .btn.secondary {
+    background: transparent;
+    border: 2px solid #888;
+    color: #e0e0e0;
+  }
+  
+  .btn.secondary:hover {
+    border-color: #4da6ff;
+    color: #4da6ff;
+    box-shadow: 0 0 12px rgba(77, 166, 255, 0.7);
+    transform: scale(1.05);
+  }
+
+/* CARROSSEL */
+.icon-cards {
+  position: relative;
+  width: 250px;
+  height: 180px;
+  perspective: 1000px;
+  padding: 65px;
+}
+
+.icon-cards__content {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transform: translateZ(-150px) rotateY(0);
+  animation: carousel 15s infinite cubic-bezier(0.77, 0, 0.175, 1) forwards;
+  margin-bottom: 15px;
+}
+
+.icon-cards__item {
+  position: absolute;
+  width: 250px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.icon-cards__item:nth-child(1) {
+  background: #FDD94F;
+  transform: rotateY(0) translateZ(150px);
+}
+.icon-cards__item:nth-child(2) {
+  background: #F87949;
+  transform: rotateY(120deg) translateZ(150px);
+}
+.icon-cards__item:nth-child(3) {
+  background: #FBAB48;
+  transform: rotateY(240deg) translateZ(150px);
+}
+
+@keyframes carousel {
+  0%, 17.5% { transform: translateZ(-150px) rotateY(0); }
+  27.5%, 45% { transform: translateZ(-150px) rotateY(-120deg); }
+  55%, 72.5% { transform: translateZ(-150px) rotateY(-240deg); }
+  82.5%, 100% { transform: translateZ(-150px) rotateY(-360deg); }
+}
+
+.modulos {
+  text-align: center;
+  padding: 50px 20px;
+}
+
+.modulos h2 {
+  font-size: 2rem;
+  margin-bottom: 40px;
+}
+
+.modulos-container {
+  display: flex;
+  justify-content: center;
+  gap: 35px;
+  flex-wrap: wrap;
+}
+
+.modulo-card {
+  position: relative;
+  background: #f3f3f3;
+  color: #000;
+  width: 200px;
+  height: 280px;
+  padding: 20px;
+  text-align: center;
+  border-radius: 0 20px 20px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  box-shadow: -6px 0 10px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.modulo-card:hover {
+  transform: translateY(-8px);
+  box-shadow: -8px 0 18px rgba(0, 0, 0, 0.35);
+}
+
+/* Faixa lateral esquerda colada */
+.modulo-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -15px;
+  bottom: -15px;
+  width: 5px;
+  background: #d9d9d9;
+  border-radius: 5px 0 0 5px;
+  box-shadow: inset -20px 0 8px rgba(0, 0, 0, 0.5);
+}
+
+.icon-area-modulo {
+  position: absolute;
+  right: 0;
+  top: 20px;
+  width: 150px;
+  height: 70px;
+  border-radius: 15px 0 0 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.icon {
+  font-size: 2rem;
+}
+
+/* cores das áreas */
+.purple .icon-area-modulo { background: #6c1edb; }
+.blue .icon-area-modulo { background: #2d8cf0; }
+.pink .icon-area-modulo { background: #c63bfa; }
+.darkblue .icon-area-modulo { background: #12246c; }
+
+/* cores dos títulos */
+.purple h3 { color: #6c1edb; }
+.blue h3 { color: #2d8cf0; }
+.pink h3 { color: #c63bfa; }
+.darkblue h3 { color: #12246c; }
+
+.modulo-card h3 {
+  font-size: 1.1rem;
+  margin-top: 90px; /* para descer depois da faixa */
+  margin-bottom: 12px;
+  position: relative;
+}
+
+/* linha colorida embaixo de cada título */
+.modulo-card h3::after {
+  content: "";
+  display: block;
+  width: 60%;
+  height: 3px;
+  margin: 6px auto 0;
+  background: currentColor; /* usa a mesma cor do texto */
+  border-radius: 2px;
+}
+
+.modulo-card p {
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* ========================== */
+/* ====== SEÇÃO JORNADA ===== */
+/* ========================== */
+.jornada {
+  max-width: 800px;
+  margin: 60px auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.jornada h1 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.subtitulo {
+  color: #cccccc;
+  margin-bottom: 40px;
+}
+
+/* Container das etapas */
+.etapas {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* Cada etapa da jornada */
+.etapa {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* ===== Círculo com número ===== */
+.numero {
+  position: absolute;
+  left: -50px;
+  top: 50%;
+  bottom: 50%;
+  transform: translateY(-50%);
+  width: 100px;
+  height: 100px;
+  background-color: white;
+  color: #15003a;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 45px;
+  z-index: 2;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  border: 2px solid #15003a;
+}
+
+/* ===== Card lateral com texto ===== */
+.card {
+  margin-left: 20px;
+  background: linear-gradient(to right, #a19999 10%, #ffffff05 90%);
+  height: 100px;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* centraliza verticalmente */
+  text-align: left;        /* textos alinhados à esquerda */
+  padding: 18px 30px 18px 50px; /* espaçamento interno */
+  border-radius: 0 20px 20px 0;
+}
+
+.card h2 {
+  margin: 0 0 6px 0;
+  font-size: 20px;
+  color: white;
+  line-height: 1.2;
+}
+
+.card p {
+  margin: 0;
+  font-size: 16px;
+  color: #dddddd;
+  line-height: 1.35;
+}
+
+/* Pequeno "degrau" nas etapas para dar movimento */
+.etapas .etapa:nth-child(1) { margin-left: 80px; }
+.etapas .etapa:nth-child(2) { margin-left: 40px; }
+.etapas .etapa:nth-child(3) { margin-left: 0px; }
+
+
+/* ========================== */
+/* === SEÇÃO DEPOIMENTOS ==== */
+/* ========================== */
+.secao-depoimentos {
+  padding: 60px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.secao-depoimentos h2 {
+  font-size: 2rem;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+/* Grid principal - formulário à esquerda e carrossel à direita */
+.container-depoimentos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+/* ========================== */
+/* ==== FORMULÁRIO ====== */
+/* ========================== */
+.formulario-depoimento {
+  background: linear-gradient(145deg, #2d0069, #180040);
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(106, 17, 203, 0.4);
+  border: 1px solid #6002f7;
+}
+
+.formulario-depoimento h3 {
+  margin-top: 0;
+  margin-bottom: 25px;
+  text-align: center;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.campo-formulario {
+  margin-bottom: 25px;
+}
+
+.campo-formulario label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #e0e0e0;
+}
+
+.campo-formulario input,
+.campo-formulario textarea {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 16px;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.campo-formulario input:focus,
+.campo-formulario textarea:focus {
+  outline: none;
+  border-color: #6a11cb;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.campo-formulario textarea {
+  height: 120px;
+  resize: vertical;
+}
+
+.contador-caracteres {
+  display: block;
+  text-align: right;
+  font-size: 0.8rem;
+  color: #aaa;
+  margin-top: 5px;
+}
+
+.btn-enviar {
+  background: linear-gradient(90deg, #8f00ff 0%, #4400e2 100%);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+}
+
+.btn-enviar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(106, 17, 203, 0.4);
+}
+
+/* ========================== */
+/* ==== CARROSSEL ====== */
+/* ========================== */
+.carrossel-depoimentos {
+  position: sticky;
+  top: 20px;
+}
+
+/* Container que segura todos os depoimentos */
+.container-depoimentos {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  flex-wrap: wrap;
+  position: relative;
+  height: 300px;
+  margin-bottom: 30px;
+  margin-top: 23%;
+  margin-left: 23%;
+}
+
+/* Cada card principal + seus fundos */
+.card-wrapper {
+  position: absolute;
+  width: 100%;
+  max-width: 400px;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.8s ease;
+  z-index: 1;
+  cursor: pointer;
+}
+
+/* Card ativo (visível) */
+.card-wrapper.active {
+  opacity: 1;
+  z-index: 3;
+}
+
+/* Card que está saindo da tela */
+.card-wrapper.exiting {
+  transform: translateX(-90%) rotate(-15deg);
+  opacity: 0;
+}
+
+/* Card que está entrando na tela */
+.card-wrapper.entering {
+  transform: translateX(90%) rotate(15deg);
+  opacity: 0;
+}
+
+/* ========================== */
+/* ==== CARD PRINCIPAL ====== */
+/* ========================== */
+.card-depoimento {
+  background-color: white;
+  color: #333;
+  padding: 25px;
+  border-radius: 12px;
+  width: 100%;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  position: relative;
+  z-index: 3;
+  transform: rotate(var(--rotacao, -2deg));
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+/* Hover mantém a rotação e adiciona o scale */
+.card-depoimento:hover {
+  transform: rotate(var(--rotacao, -2deg)) scale(1.05);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+}
+
+.card-depoimento p {
+  font-style: italic;
+  margin-bottom: 15px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.card-depoimento span {
+  display: block;
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #4b0082;
+}
+
+/* ========================== */
+/* ==== CARDS DE FUNDO ====== */
+/* ========================== */
+.camada-fundo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* ficam atrás do principal */
+}
+
+.card-fundo {
+  width: 100%;
+  height: 100%;
+  background: #eee;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  opacity: 0.6;
+  position: absolute;
+}
+
+/* Cada fundo tem leve inclinação para aparecer a borda */
+.card-fundo:nth-child(1) {
+  transform: rotate(-12deg) translate(-8px, 6px);
+}
+
+.card-fundo:nth-child(2) {
+  transform: rotate(10deg) translate(8px, 10px);
+}
+
+/* ========================== */
+/* ==== INDICADORES ====== */
+/* ========================== */
+.indicadores {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.indicador {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.indicador.active {
+  background-color: white;
+  transform: scale(1.2);
+}
+
+.indicador:hover {
+  transform: scale(1.3);
+}
+
+/* ========================== */
+/* ==== CONTROLES NAVEGAÇÃO ==== */
+/* ========================== */
+.controles-navegacao {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.btn-navegacao {
+  background: linear-gradient(45deg, #6a11cb, #2575fc);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+}
+
+.btn-navegacao:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(106, 17, 203, 0.4);
+}
+
+.btn-navegacao:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Mensagem quando não há depoimentos */
+.sem-depoimentos {
+  text-align: center;
+  padding: 40px;
+  color: #aaa;
+  font-style: italic;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ========================== */
+/* === RESPONSIVIDADE === */
+/* ========================== */
+@media (max-width: 968px) {
+  .container-depoimentos-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .carrossel-depoimentos {
+    position: static;
+  }
+  
+  .formulario-depoimento {
+    order: 2;
+  }
+  
+  .carrossel-depoimentos {
+    order: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .secao-depoimentos {
+    padding: 40px 15px;
+  }
+  
+  .formulario-depoimento {
+    padding: 30px 20px;
+  }
+  
+  .container-depoimentos {
+    height: 280px;
+  }
+  
+  .card-wrapper {
+    max-width: 100%;
+  }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateX(50px);
+  transition: all 1.5s ease;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateX(0);
+}

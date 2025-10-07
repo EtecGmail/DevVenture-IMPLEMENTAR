@@ -94,7 +94,7 @@
 
             <div class="links">
                 <button type="button" id="toggle-btn">Não tem conta? <strong>Cadastre-se</strong></button>
-                <a href="/esqueceuSenha">Esqueceu a senha</a>
+                <a href="/esqueceu-senha">Esqueceu a senha</a>
             </div>
         </div>
     </main>

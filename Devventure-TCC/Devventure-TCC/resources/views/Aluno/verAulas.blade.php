@@ -6,7 +6,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $aula->titulo }}</title>
     <link href="{{ asset('css/Aluno/verAulaAluno.css') }}" rel="stylesheet">
-      
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
@@ -25,6 +24,7 @@
             </div>
         </header>
 
+        
         <div id="video-wrapper" 
              data-video-id="{{ $videoId }}" 
              data-aula-id="{{ $aula->id }}" 
@@ -32,7 +32,7 @@
 
             <div class="video-container">
                 @if($videoId)
-                    <div id="player-iframe-id"></div> {{-- O YouTube vai substituir este div --}}
+                    <div id="player-iframe-id"></div>
                 @else
                     <p class="video-invalido">Link de vídeo inválido ou não encontrado.</p>
                 @endif
@@ -43,65 +43,64 @@
             <p><i class='bx bx-info-circle'></i> Assista ao vídeo até o final para validar sua presença.</p>
         </div>
 
-        <div id="quiz-container" class="quiz-container" style="display: none;">
-            
-            @if ($aula->formulario)
-                <div class="card-formulario">
-                    <h3>📝 Valide sua Aula</h3>
-                    <p>Responda às perguntas abaixo para validar sua presença e aprendizado nesta aula.</p>
+      <div id="quiz-container" class="quiz-container" style="display: none;">
+    
 
-                    @php
-                        // Verifica se o aluno já respondeu a este formulário
-                        $jaRespondeu = \App\Models\Resposta::where('aluno_id', auth('aluno')->id())
-                                        ->whereIn('pergunta_id', $aula->formulario->perguntas->pluck('id'))
-                                        ->exists();
-                    @endphp
+    @if ($aula->formulario && $aula->formulario->perguntas->isNotEmpty())
 
-                    @if ($jaRespondeu)
-                        <div class="alert-success">
-                            <i class='bx bx-check-circle'></i>
-                            Você já respondeu a este formulário. Bom trabalho!
-                        </div>
-                    @else
-                        @if(session('success'))
-                            <div class="alert-success">
-                                <i class='bx bx-check-circle'></i>
-                                {{ session('success') }}
-                            </div>
-                        @endif
+        <div class="card-formulario">
+            <h3>📝 Valide sua Aula</h3>
+            <p>Responda às perguntas abaixo para validar sua presença e aprendizado nesta aula.</p>
 
-                        <form action="{{ route('aluno.formulario.responder', $aula) }}" method="POST">
-                            @csrf
-                            
-                            @foreach ($aula->formulario->perguntas as $pergunta)
-                                <div class="form-group">
-                                    <label for="pergunta-{{ $pergunta->id }}">{{ $pergunta->texto_pergunta }}</label>
-                                    <textarea 
-                                        name="respostas[{{ $pergunta->id }}]" 
-                                        id="pergunta-{{ $pergunta->id }}" 
-                                        rows="3"
-                                        required
-                                        placeholder="Digite sua resposta aqui..."
-                                    ></textarea>
-                                </div>
-                            @endforeach
+            @php
+                $jaRespondeu = \App\Models\Resposta::where('aluno_id', auth('aluno')->id())
+                                    ->whereIn('pergunta_id', $aula->formulario->perguntas->pluck('id'))
+                                    ->exists();
+            @endphp
 
-                            <button type="submit" class="btn-enviar-respostas">Enviar Respostas</button>
-                        </form>
-                    @endif
+            @if ($jaRespondeu)
+                <div class="alert-success">
+                    <i class='bx bx-check-circle'></i>
+                    Você já respondeu a este formulário. Bom trabalho!
                 </div>
-            @endif
+            @else
+                <form action="{{ route('aluno.formulario.responder', $aula) }}" method="POST">
+                    @csrf
+                    
+                    @foreach ($aula->formulario->perguntas as $pergunta)
+                        <div class="form-group-quiz" style="margin-top: 20px;">
+                            <p class="pergunta-texto" style="font-weight: bold; margin-bottom: 10px;">{{ $loop->iteration }}. {{ $pergunta->texto_pergunta }}</p>
+                            
+                            <div class="opcoes-container">
+                                @foreach ($pergunta->opcoes as $opcao)
+                                    <div class="opcao-radio" style="margin-bottom: 5px;">
+                                        <input 
+                                            type="radio" 
+                                            name="respostas[{{ $pergunta->id }}]" 
+                                            id="opcao-{{ $opcao->id }}" 
+                                            value="{{ $opcao->id }}"
+                                            required>
+                                        <label for="opcao-{{ $opcao->id }}" style="margin-left: 5px;">{{ $opcao->texto_opcao }}</label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endforeach
 
-        </div> </div>
+                    <button type="submit" class="btn-enviar-respostas" style="margin-top: 25px;">Enviar Respostas</button>
+                </form>
+            @endif
+        </div>
+        
+    @endif
+
+</div>  
+ </div> 
 </main>
 
-{{-- 1. Carrega a API do YouTube --}}
+{{-- ======================== SCRIPTS ========================= --}}
 <script src="https://www.youtube.com/iframe_api"></script>
-
-
 <script src="{{ asset('js/Aluno/verAulas.js') }}"></script>
-
-    
 
 </body>
 </html>

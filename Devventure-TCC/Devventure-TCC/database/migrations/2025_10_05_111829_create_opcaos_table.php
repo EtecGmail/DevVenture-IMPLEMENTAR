@@ -13,13 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        
-    Schema::create('perguntas', function (Blueprint $table) {
+        Schema::create('opcoes', function (Blueprint $table) {
         $table->id();
-        $table->foreignId('formulario_id')->constrained()->onDelete('cascade');
-        $table->text('texto_pergunta');
-        $table->string('tipo_pergunta')->default('texto_curto');
-        // 'opcoes' guardará um JSON com as alternativas para perguntas de múltipla escolha.
+        $table->foreignId('pergunta_id')->constrained('perguntas')->onDelete('cascade');
+        $table->string('texto_opcao');
+        $table->boolean('is_correct')->default(false);
         $table->timestamps();
     });
     }
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('perguntas');
+        Schema::dropIfExists('opcaos');
     }
 };

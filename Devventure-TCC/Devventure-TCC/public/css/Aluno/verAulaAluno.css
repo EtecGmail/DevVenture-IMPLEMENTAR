@@ -202,3 +202,61 @@ body {
         font-size: 2rem;
     }
 }
+
+/* =================================================================== */
+/* CSS ADICIONAL PARA O FORMULÁRIO DE MÚLTIPLA ESCOLHA                 */
+/* =================================================================== */
+
+.form-group-quiz {
+    margin-bottom: 2rem; /* Aumenta o espaço entre as perguntas */
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.form-group-quiz:last-of-type {
+    border-bottom: none; /* Remove a borda da última pergunta */
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.pergunta-texto {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--cor-texto-principal);
+    margin-bottom: 1rem;
+}
+
+.opcoes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; /* Espaço entre as opções */
+}
+
+.opcao-radio {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.opcao-radio:hover {
+    background-color: #f8fafc;
+    border-color: var(--cor-primaria);
+}
+
+.opcao-radio input[type="radio"] {
+    margin-right: 0.75rem;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--cor-primaria); /* Deixa a bolinha com a cor do tema */
+}
+
+.opcao-radio label {
+    color: var(--cor-texto-secundario);
+    font-weight: 500;
+    flex-grow: 1; /* Faz o label ocupar o espaço para ser clicável */
+    cursor: pointer;
+}

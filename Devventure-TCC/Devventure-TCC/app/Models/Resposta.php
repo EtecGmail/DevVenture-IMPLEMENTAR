@@ -12,10 +12,10 @@ class Resposta extends Model
     
     
     protected $fillable = [
-        'aluno_id',
-        'pergunta_id',
-        'texto_resposta', 
-    ];
+    'aluno_id',
+    'pergunta_id',
+    'opcao_id', 
+];
 
     public function aluno()
     {

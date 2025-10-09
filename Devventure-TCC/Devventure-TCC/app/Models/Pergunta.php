@@ -11,26 +11,15 @@ class Pergunta extends Model
 
     /**
      * Os atributos que podem ser atribuídos em massa.
-     *
-     * @var array<int, string>
+     * A coluna 'opcoes' foi removida daqui.
      */
     protected $fillable = [
         'formulario_id',
         'texto_pergunta',
         'tipo_pergunta',
-        'opcoes',
     ];
 
-    /**
-     * Converte o atributo 'opcoes' de JSON para array automaticamente.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'opcoes' => 'array',
-    ];
-
-    
+   
     public function formulario()
     {
         return $this->belongsTo(Formulario::class);
@@ -39,6 +28,12 @@ class Pergunta extends Model
     
     public function respostas()
     {
-        return $this->hasMany(RespostaAluno::class);
+        return $this->hasMany(Resposta::class); 
+    }
+
+    
+    public function opcoes()
+    {
+        return $this->hasMany(Opcao::class);
     }
 }

@@ -18,7 +18,7 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f1f5f9; /* Um fundo leve para a página */
+   
     /* Adiciona padding no topo para o conteúdo não ficar atrás da navbar */
     padding-top: 80px;
 }

@@ -22,7 +22,7 @@
         </button>
 
         <div class="navbar-links" id="navbar-links">
-            <a href="#"><i class="fa fa-home"></i><span>Home</span></a>
+            <a href="/"><i class="fa fa-home"></i><span>Home</span></a>
             <a href="/loginProfessor"><i class="fa fa-user"></i><span>Login Professor</span></a>
             <a href="/loginAluno"><i class="fa fa-graduation-cap"></i><span>Login Aluno</span></a>
         </div>

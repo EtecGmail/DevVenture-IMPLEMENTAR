@@ -105,6 +105,14 @@
             </div>
 
             <aside class="sidebar">
+                
+                <div class="card ranking-card">
+                    <a href="{{ route('aluno.turma.ranking', $turma) }}" class="btn-ranking">
+                        <i class='bx bxs-bar-chart-alt-2'></i>
+                        <span>Ver Ranking da Turma</span>
+                    </a>
+                </div>
+                
                 <div class="card">
                     <div class="card-section">
                         <h2><i class='bx bxs-group'></i> Colegas de Turma</h2>

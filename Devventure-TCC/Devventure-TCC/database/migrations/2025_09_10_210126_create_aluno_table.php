@@ -11,14 +11,17 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+   public function up()
 {
+    // Cuidado com o nome da tabela, o seu está 'aluno' (singular)
+    // O padrão do Laravel é 'alunos' (plural)
     Schema::create('aluno', function (Blueprint $table) {
         $table->id();
         $table->string('nome');
         $table->string('ra')->unique();
         $table->string('semestre');
         $table->string('email')->unique();
+        $table->integer('total_pontos')->default(0); // <-- CAMPO ADICIONADO
         $table->timestamp('email_verified_at')->nullable();
         $table->string('avatar')->nullable();
         $table->string('telefone')->nullable();

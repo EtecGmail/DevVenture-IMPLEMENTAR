@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Turma;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Exercicio; // ADIÇÃO 1: Precisamos importar o Model Exercicio
+use App\Models\Exercicio; 
 
 class TurmaController extends Controller
 {
@@ -19,27 +19,47 @@ class TurmaController extends Controller
 
     public function mostrarTurmaEspecifica(Turma $turma)
     {
-        // ADIÇÃO 2: Pegamos o aluno que está logado para usar na consulta
+        
         $alunoLogado = Auth::guard('aluno')->user();
 
         $alunosDaTurma = $turma->alunos()->orderBy('nome')->get();
         $aulasDaTurma = $turma->aulas()->orderBy('created_at', 'asc')->get();
 
-        // ALTERAÇÃO PRINCIPAL: Substituímos a busca de exercícios pela nova consulta
+        
         $exerciciosDaTurma = Exercicio::where('turma_id', $turma->id)
-            ->where('data_publicacao', '<=', now()) // Apenas exercícios já publicados
+            ->where('data_publicacao', '<=', now()) 
             ->with(['respostas' => function ($query) use ($alunoLogado) {
                 // Anexa a resposta específica do aluno logado
                 $query->where('aluno_id', $alunoLogado->id);
             }])
-            ->orderBy('data_fechamento', 'asc') // Ordena pelo mais próximo de vencer
+            ->orderBy('data_fechamento', 'asc') 
             ->get();
 
         return view('Aluno/turmaEspecifica', [
             'turma' => $turma,
             'alunos' => $alunosDaTurma,
-            'exercicios' => $exerciciosDaTurma, // Agora esta variável contém os exercícios com o status de entrega
+            'exercicios' => $exerciciosDaTurma, 
             'aulas' => $aulasDaTurma
         ]);
     }
+
+    public function mostrarRanking(Turma $turma)
+{
+    
+    if (!Auth::guard('aluno')->user()->turmas->contains($turma->id)) {
+        abort(403, 'Acesso não autorizado a este ranking.');
+    }
+
+  
+    $alunosRanking = $turma->alunos()
+                           ->orderBy('total_pontos', 'desc') // Ordena por pontos (mais alto primeiro)
+                           ->orderBy('updated_at', 'asc')    // Desempate: quem chegou lá primeiro
+                           ->get();
+
+    return view('Aluno.ranking', [
+    'turma' => $turma,
+    'alunosRanking' => $alunosRanking,
+    'backRoute' => route('turmas.especifica', $turma->id) 
+]);
+}
 }

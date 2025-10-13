@@ -1,345 +1,195 @@
-/* =================================================================== */
-/* CSS REFEITO PARA A PÁGINA DE DETALHES DA TURMA (PROFESSOR)  */
-/* =================================================================== */
+/* =================================
+   CONFIGURAÇÕES GLOBAIS E VARIÁVEIS
+   ================================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-/* --- Variáveis e Estilos Base --- */
 :root {
-    /* CORES ATUALIZADAS PARA O TEMA DO PROFESSOR */
-    --cor-primaria: #00796B; /* Cor principal (verde/petróleo) */
-    --cor-primaria-hover: #004D40; /* Cor para hover */
-
-    /* Cores neutras mantidas */
-    --cor-fundo: #f4f7f9;
-    --cor-card: #ffffff;
-    --cor-texto-principal: #333;
-    --cor-texto-secundario: #555;
-    --cor-borda: #dee2e6;
-    --cor-sucesso: #198754;
-    --cor-erro: #dc3545;
-    --sombra-card: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --primary-color: #00796b; /* Verde escuro do tema do professor */
+    --primary-light: #e0f2f1;
+    --secondary-color: #f97316; /* Laranja para destaque */
+    --light-gray: #f3f4f6;
+    --medium-gray: #d1d5db;
+    --dark-gray: #374151;
+    --text-color: #1f2937;
+    --white-color: #ffffff;
+    --border-radius: 12px;
+    --box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: var(--cor-fundo);
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    margin: 0;
 }
 
-.page-detalhe-turma .container {
-    max-width: 1200px;
+/* =================================
+   CABEÇALHO DA TURMA
+   ================================= */
+.turma-wrapper {
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 2.5rem 2rem;
+    padding: 0 2rem 2rem 2rem;
 }
-
-/* --- Cabeçalho da Página --- */
-.page-detalhe-turma .page-header {
+.turma-header {
+    background: linear-gradient(45deg, #004d40, #00796b);
+    color: var(--white-color);
+    padding: 2rem;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    margin-bottom: 2rem;
+}
+.header-content {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     flex-wrap: wrap;
     gap: 1.5rem;
-    margin-bottom: 2rem;
-    background-color: var(--cor-card);
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: var(--sombra-card);
 }
-.page-detalhe-turma .header-content { display: flex; align-items: center; gap: 1rem; }
-.page-detalhe-turma .header-content h1 { font-size: 2rem; color: var(--cor-primaria); margin: 0; }
-.page-detalhe-turma .header-content p { font-size: 1rem; color: var(--cor-texto-secundario); margin: 0; }
-.page-detalhe-turma .header-actions { display: flex; align-items: center; gap: 1rem; }
+.back-link {
+    color: var(--white-color); text-decoration: none; font-size: 1rem; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 0.5rem; transition: opacity 0.2s;
+}
+.back-link:hover { opacity: 0.8; }
+.header-info h1 { margin: 0; font-size: 2.25rem; }
+.header-info p { margin: 0; opacity: 0.8; }
+.header-actions { display: flex; gap: 1rem; align-items: center; }
 
-.btn-voltar-mobile { display: none; } /* Escondido por padrão */
-
-/* Botões de Ação no Cabeçalho */
-.btn-acao {
+/* =================================
+   BOTÕES E CARDS
+   ================================= */
+.btn {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.7rem 1.2rem;
-    background-color: var(--cor-primaria);
-    color: white;
-    border: none;
+    padding: 0.75rem 1.25rem;
     border-radius: 8px;
+    border: none;
     font-weight: 600;
+    font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.2s ease;
-}
-.btn-acao:hover { background-color: var(--cor-primaria-hover); transform: translateY(-2px); }
-.btn-voltar-desktop {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.7rem 1.2rem;
-    background-color: #f8f9fa;
-    color: var(--cor-texto-secundario);
     text-decoration: none;
-    border: 1px solid var(--cor-borda);
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.2s ease;
+    transition: all 0.2s ease-in-out;
 }
-.btn-voltar-desktop:hover { background-color: #e9ecef; }
+.btn-primary { background-color: var(--secondary-color); color: var(--white-color); }
+.btn-primary:hover { background-color: #ea580c; }
+.btn-secondary { background-color: rgba(255,255,255,0.1); color: var(--white-color); border: 1px solid rgba(255,255,255,0.3); }
+.btn-secondary:hover { background-color: rgba(255,255,255,0.2); }
 
-/* --- Alertas de Sucesso/Erro --- */
-.alert { padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-weight: 500; }
-.alert-success { background-color: #d1e7dd; color: #0f5132; }
-.alert-error { background-color: #f8d7da; color: #842029; }
-
-/* --- Grid de Conteúdo --- */
-.content-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 2.5rem;
-}
-
-/* --- Card Genérico --- */
 .card {
-    background-color: var(--cor-card);
-    border-radius: 12px;
-    padding: 2rem;
-    box-shadow: var(--sombra-card);
+    background-color: var(--white-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
 }
-.card h2 { margin-top: 0; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+.card-header { padding: 1.5rem 1.5rem 0 1.5rem; }
+.card h2 { font-size: 1.25rem; margin: 0; display: flex; align-items: center; gap: 0.75rem; }
 
-/* --- Listas (Alunos e Exercícios) --- */
-.lista-alunos ul, .lista-exercicios ul { list-style: none; padding: 0; }
-.lista-alunos li, .lista-exercicios li {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding: 1rem;
-    border-bottom: 1px solid var(--cor-borda);
-    font-weight: 500;
+/* =================================
+   LAYOUT DO CORPO DA PÁGINA
+   ================================= */
+.page-body {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr;
+    gap: 2rem;
 }
-.lista-alunos li:last-child, .lista-exercicios li:last-child { border-bottom: none; }
-.lista-alunos li span, .lista-exercicios li span { color: var(--cor-texto-secundario); font-size: 0.9rem; }
-.empty-item { color: var(--cor-texto-secundario); font-style: italic; justify-content: center; }
+@media (max-width: 992px) { .page-body { grid-template-columns: 1fr; } }
+.main-content { display: flex; flex-direction: column; gap: 2rem; }
 
-/* --- Modal --- */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(5px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
+/* =================================
+   LISTA DE ALUNOS
+   ================================= */
+.student-list { list-style: none; padding: 1.5rem; margin: 0; }
+.student-item {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--light-gray);
 }
-.modal-overlay.active { opacity: 1; visibility: visible; }
-.modal-content {
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    transform: scale(0.95);
-    transition: all 0.3s ease;
-    position: relative;
-}
-.modal-overlay.active .modal-content { transform: scale(1); }
-.modal-content h2 { margin-top: 0; margin-bottom: 0.5rem; color: var(--cor-primaria); }
-.modal-content p { margin-bottom: 1.5rem; color: var(--cor-texto-secundario); }
-.modal-close {
-    position: absolute;
-    top: 1rem; right: 1rem;
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: var(--cor-texto-secundario);
-}
-.form-group { display: flex; flex-direction: column; margin-bottom: 1rem; }
-.form-group label { font-size: 0.9rem; font-weight: 500; margin-bottom: 0.25rem; }
-.form-group input {
-    padding: 0.8rem;
-    border: 1px solid var(--cor-borda);
-    border-radius: 6px;
-    font-size: 1rem;
-}
-.modal-buttons { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem; }
-.btn-cancelar, .btn-confirmar { padding: 0.8rem 1.5rem; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; }
-.btn-cancelar { background-color: #f1f1f1; }
-.btn-confirmar { background-color: var(--cor-primaria); color: white; }
+.student-item:last-child { border-bottom: none; }
+.student-info { display: flex; align-items: center; gap: 1rem; font-weight: 500; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+.student-progress { width: 40%; text-align: right; }
+.student-progress small { font-size: 0.8rem; color: #6b7280; }
+.progress-bar-container { background-color: #e9ecef; border-radius: 50px; height: 8px; overflow: hidden; margin-top: 4px; }
+.progress-bar { height: 100%; background-color: var(--primary-color); border-radius: 50px; }
 
-/* --- Responsividade --- */
-@media (max-width: 768px) {
-    .page-detalhe-turma .container { padding: 1.5rem 1rem; }
-    .page-detalhe-turma .page-header { flex-direction: column; align-items: stretch; }
-    .page-detalhe-turma .header-content { flex-direction: column; align-items: flex-start; }
-    .page-detalhe-turma .header-actions { justify-content: flex-start; }
-    .btn-voltar-desktop { display: none; }
-    .btn-voltar-mobile { display: block; font-size: 1.5rem; margin-bottom: 0.5rem; }
-    .content-grid { grid-template-columns: 1fr; }
+/* =================================
+   LISTA DE EXERCÍCIOS E CONTEÚDO
+   ================================= */
+.content-list { list-style: none; padding: 1.5rem; margin: 0; }
+.content-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.75rem 0; border-bottom: 1px solid var(--light-gray);
 }
+.content-item:last-child { border-bottom: none; }
+.content-item span { font-weight: 500; }
+.content-item small { color: #6b7280; }
 
-.lista-alunos li {
-    display: flex; /* O segredo para alinhar itens horizontalmente */
-    align-items: center; /* Alinha verticalmente no centro */
-    gap: 1rem; /* Espaçamento entre a foto e as informações */
-    padding: 0.8rem 1rem; /* Ajuste no espaçamento interno */
-}
-
-/* Estilo para a imagem do avatar */
-.lista-alunos .avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%; /* Deixa a imagem redonda */
-    object-fit: cover; /* Garante que a foto não fique distorcida */
-    flex-shrink: 0; /* Impede que a imagem encolha */
-}
-
-/* Container para o nome e email */
-.lista-alunos .aluno-info {
-    display: flex;
-    flex-direction: column; /* Coloca o nome em cima do email */
-}
-
-/* Estilo para o nome do aluno */
-.lista-alunos .aluno-nome {
-    font-weight: 600; /* Deixa o nome em negrito */
-    color: var(--cor-texto-principal);
-}
-
-/* Estilo para o email (que antes era um span genérico) */
-.lista-alunos .aluno-email {
-    font-size: 0.85rem;
-    color: var(--cor-texto-secundario);
-}
-
-/* Mantém o estilo para a mensagem de lista vazia */
-.lista-alunos .empty-item {
-    justify-content: center;
-    font-style: italic;
-    color: var(--cor-texto-secundario);
-}
-
-/* Variáveis de cor para os tipos de evento */
-:root {
-    --cor-aula: #4A90E2; /* Azul */
-    --cor-exercicio: #50E3C2; /* Verde-água */
-}
-
-.historico-trilha {
-    grid-column: 1 / -1; /* Ocupa a largura total do grid */
-    margin-top: 1.5rem;
-}
-
-.timeline {
-    list-style: none;
-    padding: 1rem 0 1rem 1rem;
-    margin: 0;
-    position: relative;
-}
-
-/* A linha vertical da trilha */
+/* =================================
+   HISTÓRICO (TIMELINE)
+   ================================= */
+.timeline { list-style: none; margin: 0; padding: 1.5rem; position: relative; }
 .timeline::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 20px;
-    height: 100%;
-    width: 3px;
-    background-color: #e2e8f0;
-    border-radius: 3px;
+    content: ''; position: absolute; top: 0; left: 35px;
+    height: 100%; width: 3px; background-color: var(--light-gray);
 }
-
-.timeline-item {
-    position: relative;
-    padding-left: 55px;
-    padding-bottom: 2rem;
+.timeline-item { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; position: relative; }
+.timeline-marker {
+    width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; z-index: 1; border: 3px solid var(--light-gray);
 }
-
-.timeline-item:last-child {
-    padding-bottom: 0;
-}
-
-/* O círculo na linha do tempo */
-.timeline-icon {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.5rem;
-    border: 3px solid white;
-    box-shadow: 0 0 0 3px #e2e8f0;
-    background-color: #ccc; /* Cor padrão */
-}
-
-/* Cores específicas por tipo de evento */
-.timeline-item--aula .timeline-icon {
-    background-color: var(--cor-aula);
-    box-shadow: 0 0 0 3px var(--cor-aula);
-}
-
-.timeline-item--exercicio .timeline-icon {
-    background-color: var(--cor-exercicio);
-    box-shadow: 0 0 0 3px var(--cor-exercicio);
-}
-
+.timeline-icon { font-size: 1.2rem; color: var(--white-color); }
+.timeline-item--aula .timeline-marker { background-color: #3b82f6; }
+.timeline-item--exercicio .timeline-marker { background-color: var(--primary-color); }
 .timeline-content {
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    padding: 1rem;
-    border-radius: 12px;
+    background-color: var(--light-gray); padding: 1rem; border-radius: 8px; flex: 1;
+}
+.timeline-date { font-size: 0.8rem; color: #6b7280; font-weight: 500; }
+.timeline-title { font-size: 1rem; font-weight: 600; margin: 0.25rem 0; }
+.timeline-detail { font-size: 0.9rem; margin: 0; }
+.empty-message { text-align: center; color: #6b7280; padding: 1rem 0; }
+
+/* =================================
+   MODAIS
+   ================================= */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    backdrop-filter: blur(5px); background-color: rgba(0,0,0,0.4);
+    display: none; justify-content: center; align-items: center;
+    z-index: 1000; padding: 1rem; overflow-y: auto;
+}
+.modal-content {
+    background: white; padding: 2.5rem; border-radius: 20px;
+    width: 100%; max-width: 550px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     position: relative;
+    transform: scale(0.95); opacity: 0;
+    animation: fadeInModal 0.3s forwards ease-out;
 }
-
-.timeline-data {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #64748b;
-    margin-bottom: 0.5rem;
-    display: block;
+@keyframes fadeInModal { to { transform: scale(1); opacity: 1; } }
+.modal-close {
+    position: absolute; top: 1rem; right: 1rem; background: none; border: none;
+    font-size: 1.75rem; color: #9ca3af; cursor: pointer; transition: color 0.2s;
 }
-
-.timeline-titulo {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #1e293b;
-    margin: 0;
+.modal-close:hover { color: var(--dark-gray); }
+.modal-content h2 { color: var(--primary-color); margin: 0 0 0.5rem 0; }
+.modal-content p { color: #6b7280; margin-bottom: 2rem; }
+.modal-content form { display: flex; flex-direction: column; gap: 1.25rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.modal-content label { font-size: 0.9rem; font-weight: 600; }
+.modal-content input, .modal-content select {
+    padding: 0.8rem 1rem; border: 1px solid var(--medium-gray); border-radius: 10px;
+    font-size: 1rem; width: 100%; font-family: 'Poppins', sans-serif;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
-
-.timeline-detalhe {
-    font-size: 0.9rem;
-    color: #475569;
-    margin: 0.25rem 0 0 0;
+.modal-content input:focus, .modal-content select:focus {
+    outline: none; border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-light);
 }
-
-.timeline-item-empty p {
-    padding-left: 55px;
-    color: #64748b;
+.modal-buttons {
+    display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem;
+    border-top: 1px solid var(--light-gray); padding-top: 1.5rem;
 }
-
-.lista-alunos li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.modal-buttons button {
+    padding: 0.7rem 1.5rem; border-radius: 8px; font-weight: 600;
+    cursor: pointer; font-size: 0.9rem;
 }
-
-.aluno-info {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.aluno-progresso {
-    font-size: 0.9rem;
-    color: #64748b; /* Cinza secundário */
-    font-weight: 500;
-    background-color: #f1f5f9; /* Fundo cinza bem claro */
-    padding: 0.25rem 0.75rem;
-    border-radius: 50px;
-}
+.btn-cancelar { background: #e5e7eb; color: var(--dark-gray); border: none; }
+.btn-confirmar { background: var(--primary-color); color: white; border: none; }

@@ -12,10 +12,11 @@ class Exercicio extends Model
     protected $fillable = [
     'nome',
     'descricao',
+    'pontos',
     'data_publicacao',
     'data_fechamento',
     'arquivo_path',
-    'imagem_apoio_path', 
+    'imagem_apoio_path',
     'turma_id',
     'professor_id',
 ];

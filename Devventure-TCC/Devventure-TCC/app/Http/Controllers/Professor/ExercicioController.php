@@ -46,45 +46,46 @@ class ExercicioController extends Controller
     ]);
 }
 
-public function CriarExercicios(Request $request)
-{
-    
-    $request->validate([
-        'nome' => 'required|string|max:255',
-        'descricao' => 'nullable|string',
-        'turma_id' => 'required|exists:turmas,id',
-        'data_publicacao' => 'required|date',
-        'data_fechamento' => 'required|date|after_or_equal:data_publicacao',
-        'arquivo' => 'nullable|file|mimes:pdf,doc,docx,zip|max:2048',
-        'imagem_apoio' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' 
-    ]);
 
-    
-    $path = null;
-    if ($request->hasFile('arquivo')) {
-        $path = $request->file('arquivo')->store('exercicios/arquivos', 'public');
+    public function CriarExercicios(Request $request)
+    {
+        
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'descricao' => 'nullable|string',
+            'turma_id' => 'required|exists:turmas,id',
+            'pontos' => 'required|integer|min:0', 
+            'data_publicacao' => 'required|date',
+            'data_fechamento' => 'required|date|after_or_equal:data_publicacao',
+            'arquivo' => 'nullable|file|mimes:pdf,doc,docx,zip|max:2048',
+            'imagem_apoio' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' 
+        ]);
+
+        $path = null;
+        if ($request->hasFile('arquivo')) {
+            $path = $request->file('arquivo')->store('exercicios/arquivos', 'public');
+        }
+
+        $imagemPath = null;
+        if ($request->hasFile('imagem_apoio')) {
+            $imagemPath = $request->file('imagem_apoio')->store('exercicios/imagens_apoio', 'public');
+        }
+        
+       
+        Exercicio::create([
+            'nome' => $request->nome,
+            'descricao' => $request->descricao,
+            'pontos' => $request->pontos, 
+            'data_publicacao' => $request->data_publicacao,
+            'data_fechamento' => $request->data_fechamento,
+            'arquivo_path' => $path,
+            'imagem_apoio_path' => $imagemPath, 
+            'turma_id' => $request->turma_id,
+            'professor_id' => Auth::guard('professor')->id()
+        ]);
+
+        return redirect()->back()->with('sweet_success', 'Exercício criado com sucesso!');
     }
-
-    
-    $imagemPath = null;
-    if ($request->hasFile('imagem_apoio')) {
-        $imagemPath = $request->file('imagem_apoio')->store('exercicios/imagens_apoio', 'public');
-    }
-
-    
-    Exercicio::create([
-        'nome' => $request->nome,
-        'descricao' => $request->descricao,
-        'data_publicacao' => $request->data_publicacao,
-        'data_fechamento' => $request->data_fechamento,
-        'arquivo_path' => $path,
-        'imagem_apoio_path' => $imagemPath, 
-        'turma_id' => $request->turma_id,
-        'professor_id' => Auth::guard('professor')->id()
-    ]);
-
-    return redirect()->back()->with('sweet_success', 'Exercício criado com sucesso!');
-}
     
 
 }

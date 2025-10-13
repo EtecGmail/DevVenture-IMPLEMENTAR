@@ -10,11 +10,12 @@ class Aula extends Model
     use HasFactory;
 
     protected $fillable = [
-        'turma_id', 
-        'titulo', 
-        'video_url', 
-        'duracao_segundos'
-    ];
+    'turma_id',
+    'titulo',
+    'pontos', 
+    'video_url',
+    'duracao_segundos'
+];
 
     
     public function turma()

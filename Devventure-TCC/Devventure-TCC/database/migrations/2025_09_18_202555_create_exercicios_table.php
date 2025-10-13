@@ -17,24 +17,26 @@ return new class extends Migration
      * @return void
      */
     public function up()
-    {
-        Schema::create('exercicios', function (Blueprint $table) {
-            $table->id();
-            $table->string('nome');
-            $table->text('descricao')->nullable(); 
-            
-            $table->dateTime('data_publicacao');
-            $table->dateTime('data_fechamento');
-            
-            $table->string('arquivo_path')->nullable();
-            $table->string('imagem_apoio_path')->nullable(); 
+{
+    Schema::create('exercicios', function (Blueprint $table) {
+        $table->id();
+        $table->string('nome');
+        $table->text('descricao')->nullable();
+        $table->integer('pontos')->default(10); // <-- CAMPO ADICIONADO
 
-            $table->foreignId('turma_id')->constrained('turmas')->onDelete('cascade');
-            $table->foreignId('professor_id')->constrained('professor')->onDelete('cascade');
+        $table->dateTime('data_publicacao');
+        $table->dateTime('data_fechamento');
+        
+        $table->string('arquivo_path')->nullable();
+        $table->string('imagem_apoio_path')->nullable(); 
 
-            $table->timestamps();
-        });
-    }
+        $table->foreignId('turma_id')->constrained('turmas')->onDelete('cascade');
+        
+        $table->foreignId('professor_id')->constrained('professor')->onDelete('cascade');
+
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.

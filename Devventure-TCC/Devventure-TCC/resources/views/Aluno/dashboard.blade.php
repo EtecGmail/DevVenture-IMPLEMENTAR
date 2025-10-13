@@ -90,7 +90,7 @@
                                     <small>Turma: {{ $exercicio->turma->nome_turma }}</small>
                                 </div>
                                 <div class="deadline-date {{ $exercicio->data_fechamento->isToday() || $exercicio->data_fechamento->isTomorrow() ? 'urgent' : '' }}">
-                                    <span>{{ $exercicio->data_fechamento->setTimezone('America/Sao_Paulo')->diffForHumans() }}</span>
+                                    <span>{{ $exercicio->data_fechamento->setTimezone('America/Sao_Paulo')->format('d/m/Y') }}</span>
                                 </div>
                             </a>
                         @empty
@@ -103,36 +103,40 @@
                 </div>
             </div>
 
-            <div class="coluna-lateral">
-                <div class="card card-ranking">
-                    <h3>🏆 Ranking da Turma</h3>
-                    <ul class="ranking-list">
-                        {{-- Sua lógica de ranking aqui --}}
-                        <li><span>1.</span> João Silva <small>1250 pts</small></li>
-                        <li><span>2.</span> Maria Oliveira <small>1100 pts</small></li>
-                        <li class="ranking-voce"><span>3.</span> Você <small>890 pts</small></li>
-                        <li><span>4.</span> Carlos Souza <small>850 pts</small></li>
-                    </ul>
-                </div>
+           <div class="coluna-lateral">
 
-                <div class="card card-minhas-turmas">
-                    <h3><i class='bx bxs-chalkboard'></i> Minhas Turmas</h3>
-                    <div class="lista-turmas-dashboard">
-                        @forelse($minhasTurmas as $turma)
-                            {{-- ROTA CORRIGIDA AQUI --}}
-                            <a href="{{ route('turmas.especifica', $turma) }}" class="turma-item-dashboard">
-                                <div class="turma-info">
-                                    <strong>{{ $turma->nome_turma }}</strong>
-                                    <small>Professor(a): {{ $turma->professor->nome }}</small>
-                                </div>
-                                <i class='bx bx-chevron-right'></i>
-                            </a>
-                        @empty
-                            <p class="empty-message">Você ainda não está matriculado em nenhuma turma.</p>
-                        @endforelse
-                    </div>
+    <div class="card">
+        <h3><i class='bx bxs-star'></i> Meus Pontos</h3>
+        <div class="my-points-display">
+            <span>{{ Auth::guard('aluno')->user()->total_pontos }}</span>
+            <small>pontos totais</small>
+        </div>
+        <p class="my-points-info">Continue completando aulas e exercícios para subir no ranking!</p>
+    </div>
+
+    <div class="card card-minhas-turmas">
+        <h3><i class='bx bxs-chalkboard'></i> Minhas Turmas</h3>
+        <div class="lista-turmas-dashboard">
+            @forelse($minhasTurmas as $turma)
+                <div class="turma-item-wrapper">
+                    <a href="{{ route('turmas.especifica', $turma) }}" class="turma-item-dashboard">
+                        <div class="turma-info">
+                            <strong>{{ $turma->nome_turma }}</strong>
+                            <small>Professor(a): {{ $turma->professor->nome }}</small>
+                        </div>
+                        <i class='bx bx-chevron-right'></i>
+                    </a>
+                    <a href="{{ route('aluno.turma.ranking', $turma) }}" class="turma-ranking-link">
+                        <i class='bx bx-bar-chart-alt-2'></i> Ver Ranking
+                    </a>
                 </div>
-            </div>
+            @empty
+                <p class="empty-message">Você ainda não está matriculado em nenhuma turma.</p>
+            @endforelse
+        </div>
+    </div>
+
+</div>
 
         </div>
     </div>

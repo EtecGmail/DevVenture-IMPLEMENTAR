@@ -23,16 +23,17 @@ class Aluno extends Authenticatable implements MustVerifyEmail, CanResetPassword
      * Os atributos que podem ser atribuídos em massa.
      * @var array<int, string>
      */
-    protected $fillable = [
-        'nome',
-        'ra',
-        'semestre',
-        'email',
-        'telefone',
-        'password',
-        'avatar',
-        'status',
-    ];
+   protected $fillable = [
+    'nome',
+    'ra',
+    'semestre',
+    'email',
+    'total_pontos', 
+    'telefone',
+    'password',
+    'avatar',
+    'status',
+];
 
     /**
      * Os atributos que devem ser ocultados para serialização.

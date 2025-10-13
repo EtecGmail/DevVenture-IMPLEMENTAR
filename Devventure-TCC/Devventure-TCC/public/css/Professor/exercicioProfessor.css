@@ -479,3 +479,13 @@ body {
 .link-arquivo:hover {
   background-color: #a0c2bf;
 }
+
+.card-points {
+    font-weight: 700;
+    color: var(--cor-primaria);
+    background-color: var(--cor-destaque-claro);
+    padding: 4px 8px;
+    border-radius: 6px;
+    text-align: center;
+    margin-top: 8px;
+}

@@ -62,6 +62,9 @@
                             
                             <p class="info">Abre em: {{ \Carbon\Carbon::parse($exercicio->data_publicacao)->format('d/m/Y H:i') }}</p>
                             <p class="info">Fecha em: {{ \Carbon\Carbon::parse($exercicio->data_fechamento)->format('d/m/Y H:i') }}</p>
+                            
+                            
+                            <p class="info card-points"><strong>Pontos:</strong> {{ $exercicio->pontos ?? 0 }}</p>
 
                             <div class="anexos-card">
                                 @if ($exercicio->imagem_apoio_path)
@@ -90,63 +93,68 @@
 
     <div class="modal-overlay" id="modal">
         <div class="modal-content">
-    <form action="/professorCriarExercicios" method="POST" enctype="multipart/form-data">
-        @csrf
-        <h2>Criar Exercício</h2>
+            <form action="{{ route('professor.exercicios.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <h2>Criar Exercício</h2>
 
-        <div class="form-group">
-            <label for="nome">Nome do Exercício</label>
-            <input id="nome" name="nome" type="text" placeholder="Ex: Atividade sobre Funções" required />
-        </div>
-        <div class="form-group">
-            <label for="turma_id">Turma</label>
-            <select id="turma_id" name="turma_id" required>
-                <option value="" disabled selected>Escolha uma Turma</option>
-                @foreach ($turmas as $turma)
-                    <option value="{{ $turma->id }}">{{ $turma->nome_turma }}</option>
-                @endforeach
-            </select>
-        </div>
+                <div class="form-group">
+                    <label for="nome">Nome do Exercício</label>
+                    <input id="nome" name="nome" type="text" placeholder="Ex: Atividade sobre Funções" required />
+                </div>
+                <div class="form-group">
+                    <label for="turma_id">Turma</label>
+                    <select id="turma_id" name="turma_id" required>
+                        <option value="" disabled selected>Escolha uma Turma</option>
+                        @foreach ($turmas as $turma)
+                            <option value="{{ $turma->id }}">{{ $turma->nome_turma }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-        <div class="form-group">
-            <label for="descricao">Descrição (Opcional)</label>
-            <textarea id="descricao" name="descricao" placeholder="Instruções sobre o exercício..." rows="3"></textarea>
-        </div>
+                <div class="form-group">
+                    <label for="descricao">Descrição (Opcional)</label>
+                    <textarea id="descricao" name="descricao" placeholder="Instruções sobre o exercício..." rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="pontos">Pontos do Exercício</label>
+                    <input id="pontos" name="pontos" type="number" placeholder="Ex: 25" value="10" required min="0" />
+                </div>
 
-        <div class="form-grid">
-            <div class="form-group">
-                <label for="data_publicacao">Data de Publicação</label>
-                <input id="data_publicacao" name="data_publicacao" type="datetime-local" required />
-            </div>
-            <div class="form-group">
-                <label for="data_fechamento">Data de Fechamento</label>
-                <input id="data_fechamento" name="data_fechamento" type="datetime-local" required />
-            </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="data_publicacao">Data de Publicação</label>
+                        <input id="data_publicacao" name="data_publicacao" type="datetime-local" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="data_fechamento">Data de Fechamento</label>
+                        <input id="data_fechamento" name="data_fechamento" type="datetime-local" required />
+                    </div>
 
-            <div class="form-group">
-                <label for="arquivo" class="upload-label">
-                    <i class='bx bx-upload'></i> 
-                    <span>Escolher arquivo</span>
-                </label>
-                <input name="arquivo" type="file" id="arquivo" class="input-file" />
-                <span id="nomeArquivo" class="nomeArquivo">Nenhum arquivo</span>
-            </div>
-            <div class="form-group">
-                <label for="imagem_apoio" class="upload-label">
-                    <i class='bx bx-image-add'></i> 
-                    <span>Imagem de apoio</span>
-                </label>
-                <input name="imagem_apoio" type="file" id="imagem_apoio" class="input-file" accept="image/*" />
-                <span id="nomeImagemApoio" class="nomeArquivo">Nenhuma imagem</span>
-            </div>
-        </div>
+                    <div class="form-group">
+                        <label for="arquivo" class="upload-label">
+                            <i class='bx bx-upload'></i> 
+                            <span>Escolher arquivo</span>
+                        </label>
+                        <input name="arquivo" type="file" id="arquivo" class="input-file" />
+                        <span id="nomeArquivo" class="nomeArquivo">Nenhum arquivo</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="imagem_apoio" class="upload-label">
+                            <i class='bx bx-image-add'></i> 
+                            <span>Imagem de apoio</span>
+                        </label>
+                        <input name="imagem_apoio" type="file" id="imagem_apoio" class="input-file" accept="image/*" />
+                        <span id="nomeImagemApoio" class="nomeArquivo">Nenhuma imagem</span>
+                    </div>
+                </div>
 
-        <div class="modal-buttons">
-            <button type="button" id="cancelar">Cancelar</button>
-            <button type="submit" class="criar">Criar Exercício</button>
+                <div class="modal-buttons">
+                    <button type="button" id="cancelar">Cancelar</button>
+                    <button type="submit" class="criar">Criar Exercício</button>
+                </div>
+            </form>
         </div>
-    </form>
-</div>
     </div>
 
     @include('layouts.footer')
@@ -162,6 +170,6 @@
             confirmButtonText: "Ok"
         });
     </script>
-  @endif
+    @endif
 </body>
 </html>

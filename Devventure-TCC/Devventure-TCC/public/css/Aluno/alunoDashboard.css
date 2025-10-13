@@ -404,3 +404,29 @@ body {
     margin-bottom: 0.5rem;
     color: var(--cor-sucesso);
 }
+
+.my-points-display { text-align: center; margin-bottom: 1rem; }
+.my-points-display span { font-size: 3rem; font-weight: 700; color: var(--cor-primaria); }
+.my-points-display small { display: block; color: #555; }
+.my-points-info { text-align: center; font-size: 0.9rem; color: #777; }
+
+.turma-item-wrapper {
+    background-color: var(--cor-fundo);
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+}
+.turma-item-wrapper:hover {
+    background-color: #e9ecef;
+    transform: scale(1.02);
+}
+.turma-ranking-link {
+    display: block;
+    text-align: center;
+    padding: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    color: var(--cor-primaria);
+    font-size: 0.85rem;
+    border-top: 1px solid #ddd;
+}
+.turma-ranking-link i { vertical-align: middle; }

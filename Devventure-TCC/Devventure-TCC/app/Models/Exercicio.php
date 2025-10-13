@@ -30,4 +30,9 @@ class Exercicio extends Model
         return $this->belongsTo(Turma::class);
     }
     
+    public function respostas()
+    {
+        return $this->hasMany(RespostaExercicio::class);
+    }
+
 }

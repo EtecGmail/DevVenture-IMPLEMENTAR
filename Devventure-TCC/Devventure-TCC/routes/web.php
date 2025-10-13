@@ -14,6 +14,7 @@ use App\Http\Controllers\Professor\PerfilController as ProfessorPerfilController
 use App\Http\Controllers\Aluno\RespostaController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Aluno\ExercicioAlunoController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -101,6 +102,10 @@ Route::middleware(['auth:aluno'])->group(function () {
     Route::patch('/aluno/perfil', [AlunoPerfilController::class, 'update'])->name('aluno.perfil.update');
     Route::post('/aulas/{aula}/formulario/responder', [RespostaController::class, 'store'])
         ->name('aluno.formulario.responder');
+     Route::get('/aluno/exercicios/{exercicio}', [ExercicioAlunoController::class, 'mostrar'])
+         ->name('aluno.exercicios.mostrar');
+    Route::post('/aluno/exercicios/{exercicio}/responder', [ExercicioAlunoController::class, 'responder'])
+         ->name('aluno.exercicios.responder');
 });
 
 

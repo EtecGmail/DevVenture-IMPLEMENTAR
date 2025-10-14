@@ -9,11 +9,14 @@
     
     <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
 </head>
-<body>
-    
+<body  id="welcome-page">
+
+    {{-- O id na body, é para a logica de scrollagem funcionar somente aqui --}}
+
     @include('layouts.navbar')
 
     <main>
+    
         <section class="hero">
             <canvas id="canvas"></canvas>
 

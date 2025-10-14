@@ -49,7 +49,7 @@ body {
   .hero-container {
     display: grid;
     position: absolute;
-    grid-template-columns: 1fr 350px; /* Duas colunas para texto e botões */
+    grid-template-columns: 1fr 450px; /* Duas colunas para texto e botões */
     top: 50%;
     left: 5%; /* Alinhamento à esquerda com margem */
     transform: translateY(-50%); /* Remova o -50% em X para manter alinhado à esquerda */
@@ -64,8 +64,10 @@ body {
   }
   
   .hero-carousel {
-  padding-left: 20px;
-  padding-bottom: 15px;
+  margin-right: 130px;
+  margin-bottom: 25px;
+  padding-left: 10px;
+  padding-bottom: 25px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -94,6 +96,7 @@ body {
   .hero-container p {
     font-size: 18px;
     color: #d0d0d0;
+    max-height: 70px;
     line-height: 1.6;
     margin-bottom: 30px;
   }

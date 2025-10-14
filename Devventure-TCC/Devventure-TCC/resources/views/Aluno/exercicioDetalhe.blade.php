@@ -5,32 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Detalhes do Exercício - {{ $exercicio->nome }}</title>
 
+    <!-- Ícones e Alertas -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- CSS Separado -->
     <link href="{{ asset('css/Aluno/exercicioDetalhe.css') }}" rel="stylesheet">
 </head>
 <body>
 
     <div class="page-wrapper">
         <header class="page-header">
-             <a href="{{ route('turmas.especifica', $exercicio->turma_id) }}" class="btn btn-secondary">
+             <!-- ROTA DO BOTÃO 'VOLTAR' CORRIGIDA -->
+            <a href="{{ route('turmas.especifica', $exercicio->turma_id) }}" class="btn btn-secondary">
                 <i class='bx bx-chevron-left'></i> Voltar para a Turma
             </a>
         </header>
 
         <main class="page-content">
+            <!-- Coluna da Esquerda: Detalhes do Exercício -->
             <div class="main-content">
                 <div class="card">
                     <div class="exercise-header">
                         <h1>{{ $exercicio->nome }}</h1>
                         <div class="deadline">
                             <i class='bx bxs-time-five'></i>
-                           <span>Prazo de entrega: {{ \Carbon\Carbon::parse($exercicio->data_fechamento)->setTimezone('America/Sao_Paulo')->format('d/m/Y \à\s H:i') }}</span>
+                            <span>Prazo de entrega: {{ \Carbon\Carbon::parse($exercicio->data_fechamento)->setTimezone('America/Sao_Paulo')->format('d/m/Y \à\s H:i') }}</span>
                         </div>
                     </div>
 
@@ -39,22 +44,31 @@
                         <p>{{ $exercicio->descricao ?: 'Nenhuma instrução adicional foi fornecida.' }}</p>
                     </div>
 
+                    <!-- ========================================================== -->
+                    <!-- ===== SEÇÃO DE MATERIAIS DE APOIO CORRIGIDA AQUI ===== -->
+                    <!-- ========================================================== -->
                     <div class="card-section">
                         <h2>Materiais de Apoio</h2>
                         <div class="materials-list">
-                            @if ($exercicio->imagem_apoio_path)
-                                <a href="{{ asset('storage/' . $exercicio->imagem_apoio_path) }}" target="_blank" class="material-item">
+                            {{-- Loop para exibir todas as imagens de apoio --}}
+                            @foreach ($exercicio->imagensApoio as $imagem)
+                                <a href="{{ asset('storage/' . $imagem->imagem_path) }}" target="_blank" class="material-item">
                                     <i class='bx bxs-image-alt'></i>
-                                    <span>Ver imagem de apoio</span>
+                                    <span>Ver imagem {{ $loop->count > 1 ? $loop->iteration : '' }}</span>
                                 </a>
-                            @endif
-                            @if ($exercicio->arquivo_path)
-                                <a href="{{ asset('storage/' . $exercicio->arquivo_path) }}" target="_blank" class="material-item">
+                            @endforeach
+
+                            {{-- Loop para exibir todos os arquivos de apoio --}}
+                            @foreach ($exercicio->arquivosApoio as $arquivo)
+                                <a href="{{ asset('storage/' . $arquivo->arquivo_path) }}" target="_blank" class="material-item">
                                     <i class='bx bxs-download'></i>
-                                    <span>Baixar arquivo de apoio</span>
+                                    {{-- Usa o nome original do arquivo --}}
+                                    <span>Baixar: {{ $arquivo->nome_original }}</span>
                                 </a>
-                            @endif
-                            @if (!$exercicio->imagem_apoio_path && !$exercicio->arquivo_path)
+                            @endforeach
+                            
+                            {{-- Mensagem para quando não há nenhum material --}}
+                            @if ($exercicio->imagensApoio->isEmpty() && $exercicio->arquivosApoio->isEmpty())
                                 <p class="empty-message">Nenhum material de apoio foi fornecido.</p>
                             @endif
                         </div>
@@ -62,6 +76,7 @@
                 </div>
             </div>
 
+            <!-- Coluna da Direita: Status e Ações -->
             <aside class="sidebar">
                 <div class="card submission-card">
                     <div class="card-section">
@@ -137,6 +152,7 @@
         </main>
     </div>
 
+    <!-- SCRIPTS -->
     <script>
         const inputArquivo = document.getElementById('arquivo_resposta');
         const fileListContainer = document.getElementById('file-list');
@@ -167,3 +183,4 @@
     @endif
 </body>
 </html>
+

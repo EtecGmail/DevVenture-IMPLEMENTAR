@@ -19,10 +19,8 @@
                 <i class='bx bx-chevron-left'></i>
                 Voltar
             </a>
-
             <h1>Exercicios</h1>
             <p>Crie e gerencie Exercicios com total facilidade</p>
-
             <div class="add-exercicio">
                 <button>Adicionar Exercicio</button>
             </div>
@@ -54,28 +52,24 @@
                     @forelse ($exercicios as $exercicio)
                         <div class="card">
                             <h3>{{ $exercicio->turma->nome_turma }}</h3>
-
                             <div class="tags">
                                 <span class="tag">{{ ucfirst($exercicio->turma->turno) }}</span>
                                 <span class="tag">{{ $exercicio->nome }}</span>
                             </div>
-                            
                             <p class="info">Abre em: {{ \Carbon\Carbon::parse($exercicio->data_publicacao)->format('d/m/Y H:i') }}</p>
                             <p class="info">Fecha em: {{ \Carbon\Carbon::parse($exercicio->data_fechamento)->format('d/m/Y H:i') }}</p>
-                            
-                            
                             <p class="info card-points"><strong>Pontos:</strong> {{ $exercicio->pontos ?? 0 }}</p>
 
                             <div class="anexos-card">
-                                @if ($exercicio->imagem_apoio_path)
-                                    <img src="{{ asset('storage/' . $exercicio->imagem_apoio_path) }}" alt="Imagem de apoio" class="imagem-apoio-preview">
-                                @endif
-
-                                @if ($exercicio->arquivo_path)
-                                    <a href="{{ asset('storage/' . $exercicio->arquivo_path) }}" target="_blank" class="link-arquivo">
-                                        <i class='bx bxs-file-blank'></i> Baixar Arquivo
+                                @foreach($exercicio->imagensApoio as $imagem)
+                                    <img src="{{ asset('storage/' . $imagem->imagem_path) }}" alt="Imagem de apoio" class="imagem-apoio-preview">
+                                @endforeach
+                                @foreach($exercicio->arquivosApoio as $arquivo)
+                                    <a href="{{ asset('storage/' . $arquivo->arquivo_path) }}" target="_blank" class="link-arquivo">
+                                        <i class='bx bxs-file-blank'></i>
+                                        <span>{{ $arquivo->nome_original }}</span>
                                     </a>
-                                @endif
+                                @endforeach
                             </div>
                         </div>
                     @empty
@@ -91,12 +85,30 @@
         </section>
     </main>
 
+    
+
     <div class="modal-overlay" id="modal">
         <div class="modal-content">
+
+            <!-- ========================================================== -->
+            <!-- ===== BLOCO DE ERROS MOVIDO PARA DENTRO DO MODAL AQUI ===== -->
+            <!-- ========================================================== -->
+            @if ($errors->any())
+                <div style="background-color: #f8d7da; color: #721c24; padding: 1rem; border-radius: 0.25rem; margin-bottom: 1rem;">
+                    <strong>Ops! Ocorreram alguns erros:</strong>
+                    <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <form action="{{ route('professor.exercicios.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <h2>Criar Exercício</h2>
 
+                {{-- O RESTO DO SEU FORMULÁRIO CONTINUA EXATAMENTE IGUAL --}}
                 <div class="form-group">
                     <label for="nome">Nome do Exercício</label>
                     <input id="nome" name="nome" type="text" placeholder="Ex: Atividade sobre Funções" required />
@@ -110,17 +122,14 @@
                         @endforeach
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label for="descricao">Descrição (Opcional)</label>
                     <textarea id="descricao" name="descricao" placeholder="Instruções sobre o exercício..." rows="3"></textarea>
                 </div>
-                
                 <div class="form-group">
                     <label for="pontos">Pontos do Exercício</label>
                     <input id="pontos" name="pontos" type="number" placeholder="Ex: 25" value="10" required min="0" />
                 </div>
-
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="data_publicacao">Data de Publicação</label>
@@ -130,25 +139,23 @@
                         <label for="data_fechamento">Data de Fechamento</label>
                         <input id="data_fechamento" name="data_fechamento" type="datetime-local" required />
                     </div>
-
                     <div class="form-group">
-                        <label for="arquivo" class="upload-label">
+                        <label for="arquivos_apoio" class="upload-label">
                             <i class='bx bx-upload'></i> 
-                            <span>Escolher arquivo</span>
+                            <span>Escolher arquivo(s)</span>
                         </label>
-                        <input name="arquivo" type="file" id="arquivo" class="input-file" />
-                        <span id="nomeArquivo" class="nomeArquivo">Nenhum arquivo</span>
+                        <input name="arquivos_apoio[]" type="file" id="arquivos_apoio" class="input-file" multiple />
+                        <span id="nomeArquivos" class="nomeArquivo">Nenhum arquivo</span>
                     </div>
                     <div class="form-group">
-                        <label for="imagem_apoio" class="upload-label">
+                        <label for="imagens_apoio" class="upload-label">
                             <i class='bx bx-image-add'></i> 
-                            <span>Imagem de apoio</span>
+                            <span>Imagem(ns) de apoio</span>
                         </label>
-                        <input name="imagem_apoio" type="file" id="imagem_apoio" class="input-file" accept="image/*" />
-                        <span id="nomeImagemApoio" class="nomeArquivo">Nenhuma imagem</span>
+                        <input name="imagens_apoio[]" type="file" id="imagens_apoio" class="input-file" accept="image/*" multiple />
+                        <span id="nomeImagens" class="nomeArquivo">Nenhuma imagem</span>
                     </div>
                 </div>
-
                 <div class="modal-buttons">
                     <button type="button" id="cancelar">Cancelar</button>
                     <button type="submit" class="criar">Criar Exercício</button>
@@ -161,6 +168,18 @@
 
     <script src="{{ asset('js/Professor/exercicioProfessor.js') }}"></script>
 
+    {{-- Script para reabrir o modal se houver erros --}}
+    @if ($errors->any())
+        <script>
+            // Pega o modal e o exibe imediatamente
+            const modal = document.getElementById('modal');
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+        </script>
+    @endif
+
+    {{-- Seu SweetAlert de sucesso --}}
     @if (session('sweet_success'))
     <script>
         Swal.fire({

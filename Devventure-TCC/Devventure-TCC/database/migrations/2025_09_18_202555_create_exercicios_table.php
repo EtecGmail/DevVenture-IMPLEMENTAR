@@ -22,18 +22,12 @@ return new class extends Migration
         $table->id();
         $table->string('nome');
         $table->text('descricao')->nullable();
-        $table->integer('pontos')->default(10); // <-- CAMPO ADICIONADO
-
+        $table->integer('pontos')->default(10);
         $table->dateTime('data_publicacao');
         $table->dateTime('data_fechamento');
         
-        $table->string('arquivo_path')->nullable();
-        $table->string('imagem_apoio_path')->nullable(); 
-
         $table->foreignId('turma_id')->constrained('turmas')->onDelete('cascade');
-        
         $table->foreignId('professor_id')->constrained('professor')->onDelete('cascade');
-
         $table->timestamps();
     });
 }

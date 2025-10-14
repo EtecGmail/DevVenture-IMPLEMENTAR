@@ -14,6 +14,7 @@ use App\Http\Controllers\Professor\PerfilController as ProfessorPerfilController
 use App\Http\Controllers\Aluno\RespostaController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Aluno\ExercicioAlunoController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -101,6 +102,11 @@ Route::middleware(['auth:aluno'])->group(function () {
     Route::patch('/aluno/perfil', [AlunoPerfilController::class, 'update'])->name('aluno.perfil.update');
     Route::post('/aulas/{aula}/formulario/responder', [RespostaController::class, 'store'])
         ->name('aluno.formulario.responder');
+     Route::get('/aluno/exercicios/{exercicio}', [ExercicioAlunoController::class, 'mostrar'])
+         ->name('aluno.exercicios.mostrar');
+    Route::post('/aluno/exercicios/{exercicio}/responder', [ExercicioAlunoController::class, 'responder'])
+         ->name('aluno.exercicios.responder');
+    Route::get('/turma/{turma}/ranking', [App\Http\Controllers\Aluno\TurmaController::class, 'mostrarRanking'])->name('aluno.turma.ranking');
 });
 
 
@@ -120,6 +126,8 @@ Route::middleware(['auth:professor'])->group(function () {
     Route::post('/professorCriarExercicios', [App\Http\Controllers\Professor\ExercicioController::class, 'CriarExercicios'])->name('professor.exercicios.store');
     Route::get('/professor/aulas/{aula}/formulario/create', [App\Http\Controllers\Professor\FormularioController::class, 'create'])->name('formularios.create');
     Route::post('/professor/aulas/{aula}/formulario', [App\Http\Controllers\Professor\FormularioController::class, 'store'])->name('formularios.store');
+    Route::get('/professor/turmas/{turma}/ranking', [App\Http\Controllers\Professor\TurmaController::class, 'mostrarRanking'])
+     ->name('professor.turma.ranking');
 });
 
 

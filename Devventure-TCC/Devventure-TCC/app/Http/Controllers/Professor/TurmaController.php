@@ -169,62 +169,64 @@ public function convidarAluno(Request $request, Turma $turma)
 
 public function formsAula(Request $request, Turma $turma)
 {
-   
+    
     $request->validate([
         'titulo' => ['required', 'string', 'max:255'],
         'video_url' => ['required', 'url'],
-        // Validação com Regex para o formato 'minutos,segundos' ou 'minutos.segundos'
         'duracao_texto' => ['required', 'string', 'regex:/^\d+([,.]\d{1,2})?$/'],
+        'pontos' => ['required', 'integer', 'min:0'], // <-- NOVA VALIDAÇÃO
     ]);
 
-    
-
-    
-    $duracaoInput = $request->duracao_texto;
-
-    // Garante que o separador seja sempre um ponto
-    $duracaoInput = str_replace(',', '.', $duracaoInput);
-
-    // Separa o valor em duas partes pelo ponto.
+    $duracaoInput = str_replace(',', '.', $request->duracao_texto);
     $partes = explode('.', $duracaoInput);
-
-    // A primeira parte são sempre os minutos.
     $minutos = (int) $partes[0];
-
-    // A segunda parte (se existir) são os segundos. Se não, é 0.
     $segundos = isset($partes[1]) ? (int) $partes[1] : 0;
     
-    
     if ($segundos >= 60) {
-        
         return back()->withErrors(['duracao_texto' => 'Os segundos não podem ser 60 ou mais.'])->withInput();
     }
 
     $totalEmSegundos = ($minutos * 60) + $segundos;
 
-   
-
     $aula = new Aula();
     $aula->turma_id = $turma->id;
     $aula->titulo = $request->titulo;
     $aula->video_url = $request->video_url;
-    $aula->duracao_segundos = $totalEmSegundos; 
+    $aula->duracao_segundos = $totalEmSegundos;
+    $aula->pontos = $request->pontos;
     $aula->save();
 
     $urlCriarFormulario = route('formularios.create', $aula);
 
-    
     $feedback = [
         'message' => 'Aula adicionada com sucesso!',
         'next_action_url' => $urlCriarFormulario,
         'next_action_text' => 'Criar Formulário de Validação',
     ];
 
-  
-
-    
     return redirect()->route('turmas.especificaID', $turma->id)
                      ->with('aula_criada_feedback', $feedback);
+}
+
+public function mostrarRanking(Turma $turma)
+{
+    
+    if ($turma->professor_id !== Auth::guard('professor')->id()) {
+        abort(403, 'Acesso não autorizado a este ranking.');
+    }
+
+    
+    $alunosRanking = $turma->alunos()
+                           ->orderBy('total_pontos', 'desc')
+                           ->orderBy('updated_at', 'asc')
+                           ->get();
+
+    
+    return view('Aluno.ranking', [
+        'turma' => $turma,
+        'alunosRanking' => $alunosRanking,
+        'backRoute' => route('turmas.especificaID', $turma->id) 
+    ]);
 }
 
 }

@@ -1,108 +1,108 @@
+// Espera que todo o conteúdo da página (HTML) seja carregado antes de executar.
 document.addEventListener('DOMContentLoaded', function() {
-    // --- Lógica existente para modais (continua igual) ---
+
+    // --- 1. SELEÇÃO DOS ELEMENTOS ---
+    // Botões que abrem os modais
     const btnAbrirModalAluno = document.getElementById('btnAbrirModalAluno');
-    const modalConvidarAluno = document.getElementById('modalConvidarAluno');
     const btnAbrirModalAula = document.getElementById('btnAbrirModalAula');
+
+    // Os próprios modais
+    const modalConvidarAluno = document.getElementById('modalConvidarAluno');
     const modalAdicionarAula = document.getElementById('modalAdicionarAula');
 
-    function openModal(modalId) {
-        document.getElementById(modalId).classList.add('active');
-        document.body.classList.add('modal-open');
+    // Todos os botões que fecham modais (o 'X' e os botões de "Cancelar")
+    const closeButtons = document.querySelectorAll('.modal-close, .btn-cancelar');
+
+    // --- DIAGNÓSTICO INICIAL (Verifique no console F12) ---
+    // Isso ajuda a garantir que os IDs no HTML e no JS estão corretos.
+    if (!btnAbrirModalAluno) console.error("Botão 'Convidar Aluno' não encontrado. Verifique o ID.");
+    if (!modalConvidarAluno) console.error("Modal 'Convidar Aluno' não encontrado. Verifique o ID.");
+    if (!btnAbrirModalAula) console.error("Botão 'Adicionar Aula' não encontrado. Verifique o ID.");
+    if (!modalAdicionarAula) console.error("Modal 'Adicionar Aula' não encontrado. Verifique o ID.");
+
+
+    // --- 2. FUNÇÕES PARA CONTROLAR OS MODAIS ---
+    function openModal(modalElement) {
+        if (modalElement) {
+            // Em vez de adicionar uma classe, mudamos o estilo 'display' para 'flex'
+            modalElement.style.display = 'flex';
+        }
     }
 
-    function closeModal(modalId) {
-        document.getElementById(modalId).classList.remove('active');
-        document.body.classList.remove('modal-open');
+    function closeModal() {
+        // Esconde todos os modais de uma vez
+        if (modalConvidarAluno) modalConvidarAluno.style.display = 'none';
+        if (modalAdicionarAula) modalAdicionarAula.style.display = 'none';
     }
 
+
+    // --- 3. ADICIONANDO OS EVENTOS DE CLIQUE ---
+
+    // Evento para abrir o modal de Convidar Aluno
     if (btnAbrirModalAluno) {
-        btnAbrirModalAluno.addEventListener('click', () => openModal('modalConvidarAluno'));
+        btnAbrirModalAluno.addEventListener('click', function() {
+            openModal(modalConvidarAluno);
+        });
     }
+
+    // Evento para abrir o modal de Adicionar Aula
     if (btnAbrirModalAula) {
-        btnAbrirModalAula.addEventListener('click', () => openModal('modalAdicionarAula'));
+        btnAbrirModalAula.addEventListener('click', function() {
+            openModal(modalAdicionarAula);
+        });
     }
 
-    document.querySelectorAll('.modal-close, .btn-cancelar').forEach(button => {
-        button.addEventListener('click', function() {
-            const modal = this.closest('.modal-overlay');
-            if (modal) {
-                closeModal(modal.id);
-            }
-        });
+    // Evento para fechar os modais usando os botões 'X' e 'Cancelar'
+    closeButtons.forEach(button => {
+        button.addEventListener('click', closeModal);
     });
 
-    document.querySelectorAll('.modal-overlay').forEach(overlay => {
-        overlay.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal(this.id);
-            }
-        });
+    // Evento para fechar o modal clicando fora dele (no overlay)
+    window.addEventListener('click', function(event) {
+        if (event.target === modalConvidarAluno || event.target === modalAdicionarAula) {
+            closeModal();
+        }
     });
 
-    // --- LÓGICA PARA SWEETALERT2 ---
+
+    // --- 4. LÓGICA PARA SWEETALERT2 (Sua lógica original, preservada) ---
     if (window.flashMessages) {
-        const sweetSuccessConvite = window.flashMessages.sweetSuccessConvite;
-        const sweetErrorConvite = window.flashMessages.sweetErrorConvite;
-        
-        // Convite de Aluno - Sucesso
-        if (sweetSuccessConvite && sweetSuccessConvite !== "") {
-            Swal.fire({
-                position: "top-end",
-                icon: "success",
-                title: "Seu convite foi enviado!",
-                showConfirmButton: false,
-                timer: 1500
-            });
+        if (window.flashMessages.sweetSuccessConvite) {
+            Swal.fire('Sucesso!', window.flashMessages.sweetSuccessConvite, 'success');
         }
-
-        // Convite de Aluno - Erro
-        if (sweetErrorConvite && sweetErrorConvite !== "") {
-            Swal.fire({
-                icon: "error",
-                title: "Convite não enviado",
-                text: "O Aluno já está em uma Turma!",
-                draggable: true
-            });
+        if (window.flashMessages.sweetErrorConvite) {
+            Swal.fire('Erro!', window.flashMessages.sweetErrorConvite, 'error');
         }
-
-
+        if (window.flashMessages.sweetErrorAula) {
+            Swal.fire('Erro na Aula!', window.flashMessages.sweetErrorAula, 'error');
+        }
     }
 
-    
-    // Verifica se a variável 'aulaCriadaFeedback' (que criamos no Blade) existe
     if (typeof aulaCriadaFeedback !== 'undefined') {
-            
         Swal.fire({
             icon: 'success',
-            title: aulaCriadaFeedback.message, 
+            title: aulaCriadaFeedback.message,
             html: 'Deseja criar um formulário de validação para esta aula agora?',
-            
             showCancelButton: true,
-            confirmButtonColor: '#00796B', // Sua cor primária
+            confirmButtonColor: '#00796B',
             cancelButtonColor: '#6c757d',
-            confirmButtonText: aulaCriadaFeedback.next_action_text, // "Criar Formulário de Validação"
+            confirmButtonText: aulaCriadaFeedback.next_action_text,
             cancelButtonText: 'Fazer isso depois',
-
         }).then((result) => {
-            // Se o professor clicou no botão de confirmação ("Criar Formulário...")
             if (result.isConfirmed) {
-                // Redireciona para a URL que o controller nos enviou
                 window.location.href = aulaCriadaFeedback.next_action_url;
             }
         });
     }
-
-     if (typeof formularioCriadoSuccess !== 'undefined') {
-        
+    
+    if (typeof formularioCriadoSuccess !== 'undefined') {
         Swal.fire({
-            position: "top-end", 
+            position: "top-end",
             icon: "success",
             title: formularioCriadoSuccess,
             showConfirmButton: false,
             timer: 2000
         });
     }
-
-   
 
 });

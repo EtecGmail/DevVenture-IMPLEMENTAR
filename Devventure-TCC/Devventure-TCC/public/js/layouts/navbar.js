@@ -5,9 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dropdownButtons.forEach(button => {
         button.addEventListener('click', (event) => {
             event.stopPropagation();
-            // Encontra o dropdown específico relacionado a este botão
             const dropdown = button.nextElementSibling;
-            // Fecha outros dropdowns abertos antes de abrir o novo
             document.querySelectorAll('.profile-dropdown-content.active').forEach(d => {
                 if (d !== dropdown) d.classList.remove('active');
             });
@@ -15,19 +13,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Fecha os dropdowns se clicar fora
     window.addEventListener('click', () => {
         document.querySelectorAll('.profile-dropdown-content.active').forEach(dropdown => {
             dropdown.classList.remove('active');
         });
     });
 
-
-    // --- LÓGICA INTELIGENTE PARA ABRIR QUALQUER MODAL ---
+    // --- LÓGICA INTELIGENTE PARA MODAIS ---
     const modalTriggers = document.querySelectorAll('.modal-trigger');
     modalTriggers.forEach(trigger => {
         trigger.addEventListener('click', () => {
-            const modalId = trigger.dataset.modalTarget; // Lê o atributo ex: '#edit-aluno-modal'
+            const modalId = trigger.dataset.modalTarget;
             const modal = document.querySelector(modalId);
             if (modal) {
                 modal.style.display = 'flex';
@@ -35,11 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- LÓGICA INTELIGENTE PARA FECHAR QUALQUER MODAL ---
     const modalCloseButtons = document.querySelectorAll('.modal-close');
     modalCloseButtons.forEach(button => {
         button.addEventListener('click', () => {
-            const modalId = button.dataset.modalClose; // Lê o atributo ex: '#edit-aluno-modal'
+            const modalId = button.dataset.modalClose;
             const modal = document.querySelector(modalId);
             if (modal) {
                 modal.style.display = 'none';
@@ -47,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Fecha o modal se clicar no fundo escuro
     const modalOverlays = document.querySelectorAll('.modal-overlay');
     modalOverlays.forEach(modal => {
         modal.addEventListener('click', (event) => {
@@ -57,4 +51,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // --- LÓGICA DA NAVBAR (ALTERADA) ---
+    const navbar = document.querySelector('.navbar'); 
+    const body = document.body;
+
+    // Verifica se a navbar existe na página antes de continuar
+    if (navbar) {
+        // CONDIÇÃO: A lógica de transparência só se aplica se o <body> tiver o id 'welcome-page'
+        if (body.id === 'welcome-page') {
+            // Adiciona o listener de scroll APENAS na página de welcome
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        } else {
+            // Para TODAS as outras páginas, a navbar já começa com a cor fixa
+            navbar.classList.add('scrolled');
+        }
+    }
 });

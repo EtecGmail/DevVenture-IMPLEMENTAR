@@ -24,12 +24,15 @@ body {
 .navbar {
     background-color: transparent; 
     padding: 0 5%;
-    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 1000;
     transition: background-color 0.4s ease, box-shadow 0.4s ease; /*  Adicionado transition para box-shadow */
+}
+
+#welcome-page .navbar {
+    position: fixed; 
 }
 
 /* Classe adicionada via JavaScript na rolagem */

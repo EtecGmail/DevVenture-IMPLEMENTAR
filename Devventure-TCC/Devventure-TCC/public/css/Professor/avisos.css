@@ -1,0 +1,250 @@
+/* ============================================ */
+/* CONFIGURAÇÕES GERAIS                */
+/* ============================================ */
+:root {
+    --cor-principal: #0d9488; /* Verde/Azul escuro do seu painel */
+    --cor-principal-hover: #0f766e;
+    --cor-fundo: #f8fafc; /* Um cinza bem claro */
+    --cor-borda: #e2e8f0;
+    --cor-texto-principal: #1e293b;
+    --cor-texto-secundario: #64748b;
+    --cor-branco: #ffffff;
+    --cor-erro: #ef4444;
+}
+
+body {
+    background-color: var(--cor-fundo);
+    font-family: 'Poppins', sans-serif; /* Usando uma fonte moderna, ajuste se necessário */
+    color: var(--cor-texto-principal);
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    min-height: calc(100vh - 160px); /* Ajuste a altura se seus header/footer forem diferentes */
+}
+
+/* ============================================ */
+/* CONTAINER DO FORMULÁRIO             */
+/* ============================================ */
+.form-container {
+    background-color: var(--cor-branco);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--cor-borda);
+    max-width: 800px;
+    width: 100%;
+}
+
+.btn-voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--cor-texto-secundario);
+    font-weight: 500;
+    margin-bottom: 24px;
+    transition: color 0.2s ease;
+}
+
+.btn-voltar:hover {
+    color: var(--cor-principal);
+}
+
+.btn-voltar .bx {
+    font-size: 24px;
+}
+
+.form-container h1 {
+    font-size: 2.25rem;
+    margin: 0 0 8px 0;
+    color: var(--cor-texto-principal);
+}
+
+.form-container p {
+    font-size: 1rem;
+    color: var(--cor-texto-secundario);
+    margin-top: 0;
+    margin-bottom: 32px;
+}
+
+/* ============================================ */
+/* ELEMENTOS DO FORMULÁRIO           */
+/* ============================================ */
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.form-group input[type="text"],
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    font-size: 1rem;
+    color: var(--cor-texto-principal);
+    background-color: var(--cor-fundo);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box; /* Garante que o padding não aumente o tamanho */
+}
+
+.form-group input[type="text"]::placeholder,
+.form-group textarea::placeholder {
+    color: #94a3b8;
+}
+
+.form-group input[type="text"]:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--cor-principal);
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2);
+}
+
+.form-group textarea {
+    resize: vertical; /* Permite redimensionar apenas na vertical */
+    min-height: 120px;
+}
+
+.form-group h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--cor-borda);
+    padding-bottom: 8px;
+}
+
+.error-message {
+    color: var(--cor-erro);
+    font-size: 0.875rem;
+    margin-top: 6px;
+    display: block;
+}
+
+/* ============================================ */
+/* GRID DE CHECKBOX DAS TURMAS          */
+/* ============================================ */
+.turmas-checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    background-color: var(--cor-fundo);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.checkbox-item:hover {
+    border-color: var(--cor-principal);
+}
+
+.checkbox-item input[type="checkbox"] {
+    display: none; /* Esconde o checkbox padrão */
+}
+
+.checkbox-item label {
+    font-weight: 500;
+    margin: 0;
+    padding-left: 30px; /* Espaço para o checkbox customizado */
+    position: relative;
+    cursor: pointer;
+    width: 100%;
+}
+
+/* Estilo da "caixinha" do checkbox */
+.checkbox-item label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--cor-borda);
+    background-color: var(--cor-branco);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+/* Estilo do "check" (✓) */
+.checkbox-item label::after {
+    content: '\ea4c'; /* Ícone de check do Boxicons */
+    font-family: 'boxicons';
+    position: absolute;
+    left: 3px;
+    top: 50%;
+    transform: translateY(-50%) scale(0);
+    font-size: 18px;
+    color: var(--cor-branco);
+    transition: transform 0.2s ease;
+}
+
+/* Quando o checkbox está marcado */
+.checkbox-item input[type="checkbox"]:checked + label::before {
+    background-color: var(--cor-principal);
+    border-color: var(--cor-principal);
+}
+
+.checkbox-item input[type="checkbox"]:checked + label::after {
+    transform: translateY(-50%) scale(1);
+}
+
+/* ============================================ */
+/* BOTÃO DE ENVIO                */
+/* ============================================ */
+.btn-enviar {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--cor-branco);
+    background-color: var(--cor-principal);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-enviar:hover {
+    background-color: var(--cor-principal-hover);
+}
+
+.btn-enviar:active {
+    transform: scale(0.99);
+}
+
+
+/* ============================================ */
+/* RESPONSIVIDADE               */
+/* ============================================ */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 24px;
+    }
+
+    .form-container h1 {
+        font-size: 1.75rem;
+    }
+
+    .turmas-checkbox-grid {
+        grid-template-columns: 1fr; /* Uma coluna em telas pequenas */
+    }
+}

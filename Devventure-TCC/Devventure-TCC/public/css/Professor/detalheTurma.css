@@ -193,3 +193,53 @@ body {
 }
 .btn-cancelar { background: #e5e7eb; color: var(--dark-gray); border: none; }
 .btn-confirmar { background: var(--primary-color); color: white; border: none; }
+
+/* CÓDIGO AJUSTADO PARA MÁXIMA CONSISTÊNCIA */
+.avisos-list {
+    list-style: none;
+    padding: 1.5rem; /* Padding consistente com as outras listas */
+    margin: 0;
+}
+
+.aviso-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* Espaçamento interno do aviso */
+    padding: 1rem 0; /* Espaçamento vertical */
+    border-bottom: 1px solid var(--light-gray); /* Usando border-bottom */
+}
+
+/* Remove a borda do último item da lista, igual à lista de alunos */
+.avisos-list > .aviso-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.aviso-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.aviso-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.aviso-date {
+    font-size: 0.8rem;
+    color: #6b7280;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.aviso-content p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #4b5563;
+    line-height: 1.6;
+    word-break: break-word;
+}

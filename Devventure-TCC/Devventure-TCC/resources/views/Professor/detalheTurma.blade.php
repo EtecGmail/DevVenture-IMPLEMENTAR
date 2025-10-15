@@ -61,6 +61,27 @@
                         @endforelse
                     </ul>
                 </div>
+
+                     <div class="card">
+                    <div class="card-header">
+                        <h2><i class='bx bxs-bell'></i> Mural de Avisos</h2>
+                    </div>
+                    <ul class="avisos-list">
+                        @forelse ($avisos as $aviso)
+                            <li class="aviso-item">
+                                <div class="aviso-header">
+                                    <h3 class="aviso-title">{{ $aviso->titulo }}</h3>
+                                    <small class="aviso-date">{{ $aviso->created_at->diffForHumans() }}</small>
+                                </div>
+                                <div class="aviso-content">
+                                    <p>{!! nl2br(e($aviso->conteudo)) !!}</p>
+                                </div>
+                            </li>
+                        @empty
+                            <li class="empty-message">Nenhum aviso enviado para esta turma.</li>
+                        @endforelse
+                    </ul>
+</div>
                 
                 <div class="card">
                      <div class="card-header">
@@ -85,9 +106,11 @@
                         @endforelse
                     </ul>
                 </div>
+
             </div>
 
             <aside class="sidebar">
+
                 <div class="card">
                     <div class="card-header">
                         <h2><i class='bx bxs-spreadsheet'></i> Exercícios ({{ $exercicios->count() }})</h2>

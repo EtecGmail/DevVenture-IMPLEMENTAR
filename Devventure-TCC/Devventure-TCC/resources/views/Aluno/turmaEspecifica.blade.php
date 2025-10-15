@@ -37,6 +37,7 @@
                 <div class="tabs-navigation">
                     <button class="tab-link active" data-tab="exercicios"><i class='bx bxs-pencil'></i> Exercícios</button>
                     <button class="tab-link" data-tab="aulas"><i class='bx bxs-videos'></i> Aulas</button>
+                    <button class="tab-link" data-tab="avisos"><i class='bx bxs-bell'></i> Mural de Avisos</button>
                 </div>
 
                 <div class="tabs-content">
@@ -102,6 +103,33 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="tab-pane" id="avisos">
+        <div class="avisos-list">
+            @forelse($turma->avisos as $aviso)
+                <div class="card-aviso">
+                    <div class="card-aviso-header">
+                        <h3>{{ $aviso->titulo }}</h3>
+                        <span class="data-aviso">
+                            {{ $aviso->created_at->diffForHumans() }} </span>
+                    </div>
+                    <div class="card-aviso-body">
+                        {{-- Usamos nl2br para preservar as quebras de linha do textarea --}}
+                        <p>{!! nl2br(e($aviso->conteudo)) !!}</p>
+                    </div>
+                    <div class="card-aviso-footer">
+                        <span>Enviado por: {{ $aviso->professor->nome }}</span>
+                    </div>
+                </div>
+            @empty
+                <div class="empty-state">
+                    <i class='bx bx-info-circle'></i>
+                    <p>Nenhum aviso postado nesta turma ainda.</p>
+                </div>
+            @endforelse
+        </div>
+    </div>
+    
             </div>
 
             <aside class="sidebar">

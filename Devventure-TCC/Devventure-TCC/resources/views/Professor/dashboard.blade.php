@@ -6,6 +6,7 @@
     <title>Painel do Professor</title>
     <link href="{{ asset('css/Professor/professorDashboard.css') }}" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -32,7 +33,7 @@
                 <h3>Criar Exercício</h3>
                 <p>Elabore e atribua novos exercícios.</p>
             </a>
-            <a href="#" class="card-acao">
+            <a href="{{ route('professor.avisos.create') }}" class="card-acao">
                 <i class='bx bxs-bell'></i>
                 <h3>Enviar Aviso</h3>
                 <p>Mande comunicados para uma ou mais turmas.</p>
@@ -116,6 +117,17 @@
 </main>
 
 @include('layouts.footer')
+
+@if (session('sweet_success'))
+    <script>
+        Swal.fire({
+            title: "Sucesso!",
+            text: "{{ session('sweet_success') }}",
+            icon: "success",
+            confirmButtonText: "Ok"
+        });
+    </script>
+@endif
 
 <script src="{{ asset('js/Professor/professorDashboard.js') }}"></script>
 </body>

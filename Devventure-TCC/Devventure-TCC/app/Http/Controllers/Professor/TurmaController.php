@@ -64,7 +64,8 @@ public function turmaEspecifica(Request $request)
 
 public function turmaEspecificaID(Turma $turma)
 {
-    $turma->load('alunos', 'exercicios', 'aulas');
+    
+    $turma->load('alunos', 'exercicios', 'aulas', 'avisos');
 
     $alunosNaTurma = $turma->alunos;
     $exerciciosDaTurma = $turma->exercicios;
@@ -75,7 +76,7 @@ public function turmaEspecificaID(Turma $turma)
     // Calcula progresso de cada aluno
     $alunosComProgresso = $alunosNaTurma->map(function ($aluno) use ($aulasDaTurma, $totalAulasComFormulario) {
 
-        // Conta quantas aulas ele concluiu usando o relacionamento many-to-many
+        
         $aulasConcluidas = $aulasDaTurma->filter(function ($aula) use ($aluno) {
             $pivot = $aula->alunos->firstWhere('id', $aluno->id)?->pivot;
             return $pivot && $pivot->status === 'concluido';
@@ -120,6 +121,7 @@ public function turmaEspecificaID(Turma $turma)
         'alunos' => $alunosComProgresso,
         'exercicios' => $exerciciosDaTurma,
         'historico' => $historicoCompleto,
+        'avisos' => $turma->avisos, 
     ]);
 }
 

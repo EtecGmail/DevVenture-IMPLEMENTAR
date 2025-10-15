@@ -18,30 +18,31 @@ class TurmaController extends Controller
     }
 
     public function mostrarTurmaEspecifica(Turma $turma)
-    {
-        
-        $alunoLogado = Auth::guard('aluno')->user();
+{
+    $alunoLogado = Auth::guard('aluno')->user();
 
-        $alunosDaTurma = $turma->alunos()->orderBy('nome')->get();
-        $aulasDaTurma = $turma->aulas()->orderBy('created_at', 'asc')->get();
+    $alunosDaTurma = $turma->alunos()->orderBy('nome')->get();
+    $aulasDaTurma = $turma->aulas()->orderBy('created_at', 'asc')->get();
+    
+    
+    $avisosDaTurma = $turma->avisos()->with('professor')->get();
 
-        
-        $exerciciosDaTurma = Exercicio::where('turma_id', $turma->id)
-            ->where('data_publicacao', '<=', now()) 
-            ->with(['respostas' => function ($query) use ($alunoLogado) {
-                // Anexa a resposta específica do aluno logado
-                $query->where('aluno_id', $alunoLogado->id);
-            }])
-            ->orderBy('data_fechamento', 'asc') 
-            ->get();
+    $exerciciosDaTurma = Exercicio::where('turma_id', $turma->id)
+        ->where('data_publicacao', '<=', now()) 
+        ->with(['respostas' => function ($query) use ($alunoLogado) {
+            $query->where('aluno_id', $alunoLogado->id);
+        }])
+        ->orderBy('data_fechamento', 'asc') 
+        ->get();
 
-        return view('Aluno/turmaEspecifica', [
-            'turma' => $turma,
-            'alunos' => $alunosDaTurma,
-            'exercicios' => $exerciciosDaTurma, 
-            'aulas' => $aulasDaTurma
-        ]);
-    }
+    return view('Aluno/turmaEspecifica', [
+        'turma' => $turma,
+        'alunos' => $alunosDaTurma,
+        'exercicios' => $exerciciosDaTurma, 
+        'aulas' => $aulasDaTurma,
+        'avisos' => $avisosDaTurma 
+    ]);
+}
 
     public function mostrarRanking(Turma $turma)
 {

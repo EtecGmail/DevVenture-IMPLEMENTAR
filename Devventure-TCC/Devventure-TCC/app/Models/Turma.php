@@ -41,4 +41,9 @@ public function aulas()
     return $this->hasMany(Aula::class, 'turma_id');
 }
 
+public function avisos()
+{
+    return $this->belongsToMany(Aviso::class, 'aviso_turma')->orderBy('created_at', 'desc');
+}
+
 }

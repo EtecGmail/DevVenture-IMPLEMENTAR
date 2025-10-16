@@ -15,6 +15,7 @@ use App\Http\Controllers\Aluno\RespostaController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Aluno\ExercicioAlunoController;
+use App\Http\Controllers\Professor\AvisoController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -128,6 +129,8 @@ Route::middleware(['auth:professor'])->group(function () {
     Route::post('/professor/aulas/{aula}/formulario', [App\Http\Controllers\Professor\FormularioController::class, 'store'])->name('formularios.store');
     Route::get('/professor/turmas/{turma}/ranking', [App\Http\Controllers\Professor\TurmaController::class, 'mostrarRanking'])
      ->name('professor.turma.ranking');
+    Route::get('/professor/avisos/criar', [AvisoController::class, 'create'])->name('professor.avisos.create');
+    Route::post('/professor/avisos', [AvisoController::class, 'store'])->name('professor.avisos.store');
 });
 
 

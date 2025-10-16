@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator; // <-- ADICIONE ESTE IMPORT
+use Illuminate\Support\Facades\Validator; 
+use App\Models\RespostaExercicio;   
 
 class ExercicioController extends Controller
 {
@@ -105,5 +106,60 @@ class ExercicioController extends Controller
 
         return redirect()->back()->with('sweet_success', 'Exercício criado com sucesso!');
     }
+
+    public function mostrarRespostas(Exercicio $exercicio)
+{
+    // Segurança: Garante que o professor só veja exercícios que ele mesmo criou.
+    if ($exercicio->professor_id !== Auth::guard('professor')->id()) {
+        abort(403);
+    }
+
+    
+    $exercicio->load(['respostas.aluno', 'respostas.arquivos']);
+
+    return view('Professor.respostasExercicio', compact('exercicio'));
+}
+
+public function avaliarResposta(Request $request, RespostaExercicio $resposta)
+{
+    
+    if ($resposta->exercicio->professor_id !== Auth::guard('professor')->id()) {
+        abort(403);
+    }
+
+    $request->validate([
+        'conceito' => 'required|in:MB,B,R,I',
+        'nota' => 'required|integer|min:0|max:100',
+        'feedback' => 'nullable|string',
+    ]);
+
+    
+    DB::transaction(function () use ($request, $resposta) {
+        
+        
+        $aluno = $resposta->aluno;
+
+        
+        $notaAntiga = $resposta->nota ?? 0;
+
+        
+        $notaNova = (int) $request->nota;
+
+        
+        $diferencaDePontos = $notaNova - $notaAntiga;
+
+        
+        $aluno->increment('total_pontos', $diferencaDePontos);
+
+     
+        $resposta->update([
+            'conceito' => $request->conceito,
+            'nota' => $notaNova,
+            'feedback' => $request->feedback,
+        ]);
+    });
+
+    return redirect()->back()->with('sweet_success', 'Avaliação guardada com sucesso e pontuação do aluno atualizada!');
+}
 }
 

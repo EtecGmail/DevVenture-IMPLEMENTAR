@@ -7,7 +7,6 @@
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.min.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -36,98 +35,114 @@
             </div>
         </header>
 
-        <main class="page-body">
-            <div class="main-content">
-                <div class="card">
-                    <div class="card-header">
-                        <h2><i class='bx bxs-group'></i> Alunos Matriculados ({{ $alunos->count() }})</h2>
-                    </div>
-                    <ul class="student-list">
-                        @forelse($alunos as $aluno)
-                            <li class="student-item">
-                                <div class="student-info">
-                                    <img src="{{ $aluno->avatar ? asset('storage/' . $aluno->avatar) : 'https://i.pravatar.cc/40?u='.$aluno->id }}" alt="Avatar" class="avatar">
-                                    <span>{{ $aluno->nome }}</span>
-                                </div>
-                                <div class="student-progress">
-                                    <small>{{ $aluno->progresso_percentual ?? 0 }}%</small>
-                                    <div class="progress-bar-container">
-                                        <div class="progress-bar" style="width: {{ $aluno->progresso_percentual ?? 0 }}%;"></div>
-                                    </div>
-                                </div>
-                            </li>
-                        @empty
-                            <li class="empty-message">Nenhum aluno na turma.</li>
-                        @endforelse
-                    </ul>
-                </div>
-
-                     <div class="card">
-                    <div class="card-header">
-                        <h2><i class='bx bxs-bell'></i> Mural de Avisos</h2>
-                    </div>
-                    <ul class="avisos-list">
-                        @forelse ($avisos as $aviso)
-                            <li class="aviso-item">
-                                <div class="aviso-header">
-                                    <h3 class="aviso-title">{{ $aviso->titulo }}</h3>
-                                    <small class="aviso-date">{{ $aviso->created_at->diffForHumans() }}</small>
-                                </div>
-                                <div class="aviso-content">
-                                    <p>{!! nl2br(e($aviso->conteudo)) !!}</p>
-                                </div>
-                            </li>
-                        @empty
-                            <li class="empty-message">Nenhum aviso enviado para esta turma.</li>
-                        @endforelse
-                    </ul>
-</div>
-                
-                <div class="card">
-                     <div class="card-header">
-                        <h2><i class='bx bxs-time-five'></i> Histórico da Turma</h2>
-                    </div>
-                    <ul class="timeline">
-                        @forelse ($historico as $item)
-                            <li class="timeline-item timeline-item--{{ $item['tipo'] }}">
-                                <div class="timeline-marker">
-                                    <div class="timeline-icon">
-                                        <i class='bx {{ $item['tipo'] == 'aula' ? 'bxs-videos' : 'bxs-spreadsheet' }}'></i>
-                                    </div>
-                                </div>
-                                <div class="timeline-content">
-                                    <span class="timeline-date">{{ \Carbon\Carbon::parse($item['data'])->setTimezone('America/Sao_Paulo')->format('d/m \à\s H:i') }}</span>
-                                    <h3 class="timeline-title">{{ $item['titulo'] }}</h3>
-                                    <p class="timeline-detail">{{ $item['detalhe'] }}</p>
-                                </div>
-                            </li>
-                        @empty
-                            <li class="empty-message">Nenhuma atividade registrada.</li>
-                        @endforelse
-                    </ul>
-                </div>
-
+    <main class="page-body">
+    <div class="main-content">
+        <div class="card">
+            <div class="card-header">
+                <h2><i class='bx bxs-group'></i> Alunos Matriculados ({{ $alunos->total() }})</h2>
             </div>
+            <ul class="student-list">
+                @forelse($alunos as $aluno)
+                    <a href="{{ route('professor.relatorios.aluno', ['turma' => $turma, 'aluno' => $aluno]) }}" class="student-item">
+                        <div class="student-info">
+                            <img src="{{ $aluno->avatar ? asset('storage/' . $aluno->avatar) : 'https://i.pravatar.cc/40?u='.$aluno->id }}" alt="Avatar" class="avatar">
+                            <span>{{ $aluno->nome }}</span>
+                        </div>
+                        <div class="student-progress">
+                            <small>{{ $aluno->progresso_percentual ?? 0 }}%</small>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: {{ $aluno->progresso_percentual ?? 0 }}%;"></div>
+                            </div>
+                        </div>
+                    </a>
+                @empty
+                    <li class="empty-message">Nenhum aluno na turma.</li>
+                @endforelse
+            </ul>
 
-            <aside class="sidebar">
+            <div class="pagination">
+                {{ $alunos->appends(request()->except('alunosPage'))->links() }}
+            </div>
+        </div>
 
-                <div class="card">
-                    <div class="card-header">
-                        <h2><i class='bx bxs-spreadsheet'></i> Exercícios ({{ $exercicios->count() }})</h2>
-                    </div>
-                    <ul class="content-list">
-                         @forelse ($exercicios as $exercicio)
-                            <li class="content-item">
-                                <span>{{ $exercicio->nome }}</span>
-                                <small>Até {{ \Carbon\Carbon::parse($exercicio->data_fechamento)->setTimezone('America/Sao_Paulo')->format('d/m/Y') }}</small>
-                            </li>
-                        @empty
-                            <li class="empty-message">Nenhum exercício cadastrado.</li>
-                        @endforelse
-                    </ul>
-                </div>
-            </aside>
-        </main>
+        <div class="card">
+            <div class="card-header">
+                <h2><i class='bx bxs-bell'></i> Mural de Avisos ({{ $avisos->total() }})</h2>
+            </div>
+            <ul class="avisos-list">
+                @forelse ($avisos as $aviso)
+                    <li class="aviso-item">
+                        <div class="aviso-header">
+                            <h3 class="aviso-title">{{ $aviso->titulo }}</h3>
+                            <small class="aviso-date">{{ $aviso->created_at->diffForHumans() }}</small>
+                        </div>
+                        <div class="aviso-content">
+                            <p>{!! nl2br(e($aviso->conteudo)) !!}</p>
+                        </div>
+                    </li>
+                @empty
+                    <li class="empty-message">Nenhum aviso enviado para esta turma.</li>
+                @endforelse
+            </ul>
+            
+            <div class="pagination">
+                {{ $avisos->appends(request()->except('avisosPage'))->links() }}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2><i class='bx bxs-time-five'></i> Histórico da Turma ({{ $historico->total() }})</h2>
+            </div>
+            <ul class="timeline">
+                @forelse ($historico as $item)
+                    <li class="timeline-item timeline-item--{{ $item['tipo'] }}">
+                        <div class="timeline-marker">
+                            <div class="timeline-icon">
+                                <i class='bx {{ $item['tipo'] == 'aula' ? 'bxs-videos' : 'bxs-spreadsheet' }}'></i>
+                            </div>
+                        </div>
+                        <div class="timeline-content">
+                            <span class="timeline-date">
+                                {{ \Carbon\Carbon::parse($item['data'])->setTimezone('America/Sao_Paulo')->format('d/m \à\s H:i') }}
+                            </span>
+                            <h3 class="timeline-title">{{ $item['titulo'] }}</h3>
+                            <p class="timeline-detail">{{ $item['detalhe'] }}</p>
+                        </div>
+                    </li>
+                @empty
+                    <li class="empty-message">Nenhuma atividade registrada.</li>
+                @endforelse
+            </ul>
+            
+            <div class="pagination">
+                {{ $historico->appends(request()->except('historicoPage'))->links() }}
+            </div>
+        </div>
+    </div>
+
+    <aside class="sidebar">
+        <div class="card">
+            <div class="card-header">
+                <h2><i class='bx bxs-spreadsheet'></i> Exercícios ({{ $exercicios->total() }})</h2>
+            </div>
+            <ul class="content-list">
+                @forelse ($exercicios as $exercicio)
+                    <li class="content-item">
+                        <span>{{ $exercicio->nome }}</span>
+                        <small>Até {{ \Carbon\Carbon::parse($exercicio->data_fechamento)->setTimezone('America/Sao_Paulo')->format('d/m/Y') }}</small>
+                    </li>
+                @empty
+                    <li class="empty-message">Nenhum exercício cadastrado.</li>
+                @endforelse
+            </ul>
+            
+            <div class="pagination">
+                {{ $exercicios->appends(request()->except('exerciciosPage'))->links() }}
+            </div>
+        </div>
+    </aside>
+</main>
     </div>
 
     <div class="modal-overlay" id="modalConvidarAluno">
@@ -185,6 +200,7 @@
         </div>
     </div>
 
+    
     <script>
         window.flashMessages = {
             sweetSuccessConvite: "{{ session('sweet_success_convite') }}",

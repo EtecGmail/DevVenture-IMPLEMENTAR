@@ -5,30 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Detalhes do Exercício - {{ $exercicio->nome }}</title>
 
-    <!-- Ícones e Alertas -->
+    <!-- Ícones, Alertas e Fontes -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- CSS Separado -->
+    <!-- CSS da Página -->
     <link href="{{ asset('css/Aluno/exercicioDetalhe.css') }}" rel="stylesheet">
 </head>
 <body>
 
     <div class="page-wrapper">
         <header class="page-header">
-             <!-- ROTA DO BOTÃO 'VOLTAR' CORRIGIDA -->
             <a href="{{ route('turmas.especifica', $exercicio->turma_id) }}" class="btn btn-secondary">
                 <i class='bx bx-chevron-left'></i> Voltar para a Turma
             </a>
         </header>
 
         <main class="page-content">
-            <!-- Coluna da Esquerda: Detalhes do Exercício -->
+            
             <div class="main-content">
                 <div class="card">
                     <div class="exercise-header">
@@ -38,36 +35,25 @@
                             <span>Prazo de entrega: {{ \Carbon\Carbon::parse($exercicio->data_fechamento)->setTimezone('America/Sao_Paulo')->format('d/m/Y \à\s H:i') }}</span>
                         </div>
                     </div>
-
                     <div class="card-section">
                         <h2>Instruções do Professor</h2>
                         <p>{{ $exercicio->descricao ?: 'Nenhuma instrução adicional foi fornecida.' }}</p>
                     </div>
-
-                    <!-- ========================================================== -->
-                    <!-- ===== SEÇÃO DE MATERIAIS DE APOIO CORRIGIDA AQUI ===== -->
-                    <!-- ========================================================== -->
                     <div class="card-section">
                         <h2>Materiais de Apoio</h2>
                         <div class="materials-list">
-                            {{-- Loop para exibir todas as imagens de apoio --}}
                             @foreach ($exercicio->imagensApoio as $imagem)
                                 <a href="{{ asset('storage/' . $imagem->imagem_path) }}" target="_blank" class="material-item">
                                     <i class='bx bxs-image-alt'></i>
                                     <span>Ver imagem {{ $loop->count > 1 ? $loop->iteration : '' }}</span>
                                 </a>
                             @endforeach
-
-                            {{-- Loop para exibir todos os arquivos de apoio --}}
                             @foreach ($exercicio->arquivosApoio as $arquivo)
                                 <a href="{{ asset('storage/' . $arquivo->arquivo_path) }}" target="_blank" class="material-item">
                                     <i class='bx bxs-download'></i>
-                                    {{-- Usa o nome original do arquivo --}}
                                     <span>Baixar: {{ $arquivo->nome_original }}</span>
                                 </a>
                             @endforeach
-                            
-                            {{-- Mensagem para quando não há nenhum material --}}
                             @if ($exercicio->imagensApoio->isEmpty() && $exercicio->arquivosApoio->isEmpty())
                                 <p class="empty-message">Nenhum material de apoio foi fornecido.</p>
                             @endif
@@ -76,12 +62,40 @@
                 </div>
             </div>
 
-            <!-- Coluna da Direita: Status e Ações -->
+            <!-- Coluna da Direita: Status, Devolutiva e Ações -->
             <aside class="sidebar">
+                
+                <!-- Card de Devolutiva (aparece se já foi avaliado) -->
+                @if ($respostaAnterior && $respostaAnterior->conceito)
+                    <div class="card feedback-card">
+                        <div class="card-section">
+                            <h2><i class='bx bxs-edit-alt'></i> Devolutiva do Professor</h2>
+                            <div class="grade-summary">
+                                <div class="grade-item">
+                                    <small>Conceito</small>
+                                    <span class="conceito-badge conceito-{{ strtolower($respostaAnterior->conceito) }}">{{ $respostaAnterior->conceito }}</span>
+                                </div>
+                                <div class="grade-item">
+                                    <small>Nota</small>
+                                    <strong>{{ $respostaAnterior->nota }} / 100</strong>
+                                </div>
+                            </div>
+                            @if($respostaAnterior->feedback)
+                                <div class="feedback-text">
+                                    <h4>Comentários:</h4>
+                                    <p>{{ $respostaAnterior->feedback }}</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                @endif
+
+
+                <!-- Card de Status e Envio -->
                 <div class="card submission-card">
                     <div class="card-section">
                         <h2>Status da Entrega</h2>
-
+                        
                         @if ($respostaAnterior && $respostaAnterior->arquivos->isNotEmpty())
                             <div class="status-badge status-delivered">
                                 <i class='bx bxs-check-circle'></i>
@@ -94,7 +108,7 @@
                                     @foreach ($respostaAnterior->arquivos as $arquivo)
                                         <li>
                                             <a href="{{ asset('storage/' . $arquivo->arquivo_path) }}" target="_blank">
-                                                <i class='bx bxs-file-blank'></i> {{ basename($arquivo->arquivo_path) }}
+                                                <i class='bx bxs-file-blank'></i> {{ $arquivo->nome_original ?? basename($arquivo->arquivo_path) }}
                                             </a>
                                         </li>
                                     @endforeach
@@ -148,6 +162,7 @@
                         </div>
                     @endif
                 </div>
+
             </aside>
         </main>
     </div>
@@ -171,6 +186,17 @@
             });
         }
     </script>
+
+    @if (session('sweet_success'))
+        <script>
+            Swal.fire({
+                title: "Sucesso!",
+                text: "{{ session('sweet_success') }}",
+                icon: "success",
+                confirmButtonText: "Ok"
+            });
+        </script>
+    @endif
     @if (session('sweet_error'))
     <script>
         Swal.fire({

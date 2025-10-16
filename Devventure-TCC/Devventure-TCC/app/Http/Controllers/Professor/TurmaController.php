@@ -12,6 +12,10 @@ use App\Models\Aula;
 use App\Models\Exercicio;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+
 
 class TurmaController extends Controller
 {
@@ -62,68 +66,70 @@ public function turmaEspecifica(Request $request)
 
 
 
-public function turmaEspecificaID(Turma $turma)
-{
-    
-    $turma->load('alunos', 'exercicios', 'aulas', 'avisos');
-
-    $alunosNaTurma = $turma->alunos;
-    $exerciciosDaTurma = $turma->exercicios;
-    $aulasDaTurma = $turma->aulas;
-
-    $totalAulasComFormulario = $aulasDaTurma->count();
-
-    // Calcula progresso de cada aluno
-    $alunosComProgresso = $alunosNaTurma->map(function ($aluno) use ($aulasDaTurma, $totalAulasComFormulario) {
-
+public function turmaEspecificaID(Turma $turma, Request $request)
+    {
         
-        $aulasConcluidas = $aulasDaTurma->filter(function ($aula) use ($aluno) {
-            $pivot = $aula->alunos->firstWhere('id', $aluno->id)?->pivot;
-            return $pivot && $pivot->status === 'concluido';
-        })->count();
+        $turma->load('aulas');
+        $aulasDaTurma = $turma->aulas;
+        $totalAulasComFormulario = $aulasDaTurma->count();
 
-        $aluno->aulas_concluidas = $aulasConcluidas;
-        $aluno->total_aulas_com_formulario = $totalAulasComFormulario;
-        $aluno->progresso_percentual = $totalAulasComFormulario > 0
-            ? round(($aulasConcluidas / $totalAulasComFormulario) * 100)
-            : 0;
+        // 1. PAGINAÇÃO: ALUNOS (10 por página)
+        // Usamos 'alunosPage' como nome do parâmetro da página
+        $alunosPaginados = $turma->alunos()->paginate(10, ['*'], 'alunosPage');
 
-        return $aluno;
-    });
+        // Calcula o progresso APENAS para os alunos da página atual
+        $alunosComProgresso = $alunosPaginados->through(function ($aluno) use ($aulasDaTurma, $totalAulasComFormulario) {
+            $aulasConcluidas = $aulasDaTurma->filter(function ($aula) use ($aluno) {
+                $pivot = $aula->alunos->firstWhere('id', $aluno->id)?->pivot;
+                return $pivot && $pivot->status === 'concluido';
+            })->count();
 
-    // HISTÓRICO
-    $historicoExercicios = $exerciciosDaTurma->map(function ($exercicio) {
-        return [
-            'tipo' => 'exercicio',
-            'data' => $exercicio->data_publicacao,
-            'titulo' => $exercicio->nome,
-            'detalhe' => 'Entrega até ' . Carbon::parse($exercicio->data_fechamento)->format('d/m/Y H:i'),
-        ];
-    })->all();
+            $aluno->aulas_concluidas = $aulasConcluidas;
+            $aluno->total_aulas_com_formulario = $totalAulasComFormulario;
+            $aluno->progresso_percentual = $totalAulasComFormulario > 0
+                ? round(($aulasConcluidas / $totalAulasComFormulario) * 100)
+                : 0;
 
-    $historicoAulas = $aulasDaTurma->map(function ($aula) {
-        return [
-            'tipo' => 'aula',
-            'data' => $aula->created_at,
-            'titulo' => $aula->titulo,
-            'detalhe' => 'Duração: ' . floor($aula->duracao_segundos / 60) . 'm ' . ($aula->duracao_segundos % 60) . 's',
-        ];
-    })->all();
+            return $aluno;
+        });
+        
+        // 2. PAGINAÇÃO: EXERCÍCIOS (5 por página)
+        // É uma boa prática ordenar os resultados
+        $exerciciosPaginados = $turma->exercicios()->orderBy('data_publicacao', 'desc')->paginate(5, ['*'], 'exerciciosPage');
 
-    $historicoCompleto = array_merge($historicoExercicios, $historicoAulas);
+        // 3. PAGINAÇÃO: AVISOS (5 por página)
+        $avisosPaginados = $turma->avisos()->orderBy('created_at', 'desc')->paginate(5, ['*'], 'avisosPage');
 
-    usort($historicoCompleto, function ($a, $b) {
-        return Carbon::parse($b['data'] ?? '1970-01-01') <=> Carbon::parse($a['data'] ?? '1970-01-01');
-    });
+        // 4. PAGINAÇÃO MANUAL: HISTÓRICO (5 por página)
+        // Primeiro, montamos a lista completa como antes
+        $historicoExercicios = $turma->exercicios->map(function ($exercicio) {
+            return [ 'tipo' => 'exercicio', 'data' => $exercicio->data_publicacao, 'titulo' => $exercicio->nome, 'detalhe' => 'Entrega até ' . Carbon::parse($exercicio->data_fechamento)->format('d/m/Y H:i')];
+        })->all();
+        $historicoAulas = $aulasDaTurma->map(function ($aula) {
+            return [ 'tipo' => 'aula', 'data' => $aula->created_at, 'titulo' => $aula->titulo, 'detalhe' => 'Duração: ' . floor($aula->duracao_segundos / 60) . 'm ' . ($aula->duracao_segundos % 60) . 's'];
+        })->all();
+        
+        $historicoCompleto = new Collection(array_merge($historicoExercicios, $historicoAulas));
+        $historicoOrdenado = $historicoCompleto->sortByDesc('data');
 
-    return view('Professor/detalheTurma', [
-        'turma' => $turma,
-        'alunos' => $alunosComProgresso,
-        'exercicios' => $exerciciosDaTurma,
-        'historico' => $historicoCompleto,
-        'avisos' => $turma->avisos, 
-    ]);
-}
+        //  criação do paginador manualmente
+        $perPage = 5;
+        $pageName = 'historicoPage';
+        $currentPage = Paginator::resolveCurrentPage($pageName, 1);
+        $currentPageItems = $historicoOrdenado->slice(($currentPage - 1) * $perPage, $perPage)->all();
+        $historicoPaginado = new LengthAwarePaginator($currentPageItems, $historicoOrdenado->count(), $perPage, $currentPage, [
+            'path' => Paginator::resolveCurrentPath(),
+            'pageName' => $pageName,
+        ]);
+
+        return view('Professor/detalheTurma', [
+            'turma' => $turma,
+            'alunos' => $alunosComProgresso,      
+            'exercicios' => $exerciciosPaginados, 
+            'historico' => $historicoPaginado,     
+            'avisos' => $avisosPaginados,         
+        ]);
+    }
 
 
 

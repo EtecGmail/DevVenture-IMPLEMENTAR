@@ -23,12 +23,14 @@ class RespostaExercicio extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'exercicio_id',
-        'aluno_id',
-        'data_envio',
-    ];
-
+   protected $fillable = [
+    'exercicio_id',
+    'aluno_id',
+    'data_envio',
+    'nota',
+    'conceito',
+    'feedback',
+];
     
     public function arquivos()
     {

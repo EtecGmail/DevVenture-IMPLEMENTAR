@@ -71,6 +71,11 @@ class Aluno extends Authenticatable implements MustVerifyEmail, CanResetPassword
         return $this->hasMany(RespostaAluno::class);
     }
 
+    
+public function respostasExercicios()
+{
+    return $this->hasMany(RespostaExercicio::class, 'aluno_id');
+}
 
     
 }

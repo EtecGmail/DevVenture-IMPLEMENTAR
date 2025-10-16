@@ -25,9 +25,9 @@
                     <p>Professor(a): {{ $turma->professor->nome }}</p>
                 </div>
                 <div class="header-stats">
-                    <div class="stat-item"><i class='bx bxs-group'></i><span>{{ $alunos->count() }} Alunos</span></div>
-                    <div class="stat-item"><i class='bx bxs-book-content'></i><span>{{ $exercicios->count() }} Exercícios</span></div>
-                    <div class="stat-item"><i class='bx bxs-videos'></i><span>{{ $aulas->count() }} Aulas</span></div>
+                    <div class="stat-item"><i class='bx bxs-group'></i><span>{{ $alunos->total() }} Alunos</span></div>
+                    <div class="stat-item"><i class='bx bxs-book-content'></i><span>{{ $exercicios->total() }} Exercícios</span></div>
+                    <div class="stat-item"><i class='bx bxs-videos'></i><span>{{ $aulas->total() }} Aulas</span></div>
                 </div>
             </div>
         </header>
@@ -35,13 +35,13 @@
         <main class="page-body">
             <div class="main-content">
                 <div class="tabs-navigation">
-                    <button class="tab-link active" data-tab="exercicios"><i class='bx bxs-pencil'></i> Exercícios</button>
-                    <button class="tab-link" data-tab="aulas"><i class='bx bxs-videos'></i> Aulas</button>
-                    <button class="tab-link" data-tab="avisos"><i class='bx bxs-bell'></i> Mural de Avisos</button>
+                    <button class="tab-link {{ request('tab', 'exercicios') == 'exercicios' ? 'active' : '' }}" data-tab="exercicios"><i class='bx bxs-pencil'></i> Exercícios</button>
+                    <button class="tab-link {{ request('tab') == 'aulas' ? 'active' : '' }}" data-tab="aulas"><i class='bx bxs-videos'></i> Aulas</button>
+                    <button class="tab-link {{ request('tab') == 'avisos' ? 'active' : '' }}" data-tab="avisos"><i class='bx bxs-bell'></i> Mural de Avisos</button>
                 </div>
 
                 <div class="tabs-content">
-                    <div class="tab-pane active" id="exercicios">
+                    <div class="tab-pane {{ request('tab', 'exercicios') == 'exercicios' ? 'active' : '' }}" id="exercicios">
                         <div class="content-grid">
                             @forelse($exercicios as $exercicio)
                                 @php
@@ -78,8 +78,12 @@
                                 </div>
                             @endforelse
                         </div>
+                        <div class="pagination">
+                            {{ $exercicios->appends(['tab' => 'exercicios'])->appends(request()->except('exerciciosPage'))->links() }}
+                        </div>
                     </div>
-                    <div class="tab-pane" id="aulas">
+
+                    <div class="tab-pane {{ request('tab') == 'aulas' ? 'active' : '' }}" id="aulas">
                         <div class="content-grid">
                             @forelse($aulas as $aula)
                                 <a href="{{ route('aulas.view', $aula) }}" class="lesson-card">
@@ -101,39 +105,42 @@
                                 </div>
                             @endforelse
                         </div>
+                        <div class="pagination">
+                             {{ $aulas->appends(['tab' => 'aulas'])->appends(request()->except('aulasPage'))->links() }}
+                        </div>
                     </div>
-                </div>
 
-                <div class="tab-pane" id="avisos">
-        <div class="avisos-list">
-            @forelse($turma->avisos as $aviso)
-                <div class="card-aviso">
-                    <div class="card-aviso-header">
-                        <h3>{{ $aviso->titulo }}</h3>
-                        <span class="data-aviso">
-                            {{ $aviso->created_at->diffForHumans() }} </span>
-                    </div>
-                    <div class="card-aviso-body">
-                        {{-- Usamos nl2br para preservar as quebras de linha do textarea --}}
-                        <p>{!! nl2br(e($aviso->conteudo)) !!}</p>
-                    </div>
-                    <div class="card-aviso-footer">
-                        <span>Enviado por: {{ $aviso->professor->nome }}</span>
+                    <div class="tab-pane {{ request('tab') == 'avisos' ? 'active' : '' }}" id="avisos">
+                        <div class="avisos-list">
+                             @forelse($avisos as $aviso)
+                                <div class="card-aviso">
+                                    <div class="card-aviso-header">
+                                        <h3>{{ $aviso->titulo }}</h3>
+                                        <span class="data-aviso">
+                                            {{ $aviso->created_at->diffForHumans() }} </span>
+                                    </div>
+                                    <div class="card-aviso-body">
+                                        <p>{!! nl2br(e($aviso->conteudo)) !!}</p>
+                                    </div>
+                                    <div class="card-aviso-footer">
+                                        <span>Enviado por: {{ $aviso->professor->nome }}</span>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="empty-state">
+                                    <i class='bx bx-info-circle'></i>
+                                    <p>Nenhum aviso postado nesta turma ainda.</p>
+                                </div>
+                            @endforelse
+                        </div>
+                        <div class="pagination">
+                             {{ $avisos->appends(['tab' => 'avisos'])->appends(request()->except('avisosPage'))->links() }}
+                        </div>
                     </div>
                 </div>
-            @empty
-                <div class="empty-state">
-                    <i class='bx bx-info-circle'></i>
-                    <p>Nenhum aviso postado nesta turma ainda.</p>
-                </div>
-            @endforelse
-        </div>
-    </div>
-    
             </div>
 
             <aside class="sidebar">
-                
                 <div class="card ranking-card">
                     <a href="{{ route('aluno.turma.ranking', $turma) }}" class="btn-ranking">
                         <i class='bx bxs-bar-chart-alt-2'></i>
@@ -145,15 +152,17 @@
                     <div class="card-section">
                         <h2><i class='bx bxs-group'></i> Colegas de Turma</h2>
                         <ul class="classmates-list">
-                            @forelse($alunos as $aluno)
-                                <li>
-                                    <img src="{{ $aluno->avatar ? asset('storage/' . $aluno->avatar) : 'https://i.pravatar.cc/40?u='.$aluno->id }}" alt="Avatar" class="avatar">
-                                    <span>{{ $aluno->nome }}</span>
+                            @forelse($alunos as $alunoItem) <li>
+                                    <img src="{{ $alunoItem->avatar ? asset('storage/' . $alunoItem->avatar) : 'https://i.pravatar.cc/40?u='.$alunoItem->id }}" alt="Avatar" class="avatar">
+                                    <span>{{ $alunoItem->nome }}</span>
                                 </li>
                             @empty
                                 <li class="empty-message">Nenhum outro aluno na turma.</li>
                             @endforelse
                         </ul>
+                         <div class="pagination">
+                             {{ $alunos->appends(request()->except('colegasPage'))->links() }}
+                        </div>
                     </div>
                 </div>
             </aside>
@@ -161,7 +170,7 @@
     </div>
     
     <script>
-        // Lógica para alternar entre as abas (Exercícios e Aulas)
+        // Lógica para alternar entre as abas (não precisa de alteração)
         const tabLinks = document.querySelectorAll('.tab-link');
         const tabPanes = document.querySelectorAll('.tab-pane');
 

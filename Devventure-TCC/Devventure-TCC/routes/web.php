@@ -135,6 +135,10 @@ Route::middleware(['auth:professor'])->group(function () {
      ->name('professor.exercicios.respostas');
     Route::post('/professor/respostas/{resposta}/avaliar', [App\Http\Controllers\Professor\ExercicioController::class, 'avaliarResposta'])
      ->name('professor.respostas.avaliar');
+     Route::get('/professor/turmas/{turma}/relatorios', [App\Http\Controllers\Professor\RelatorioController::class, 'index'])
+     ->name('professor.relatorios.index');
+    Route::get('/professor/turmas/{turma}/relatorios/aluno/{aluno}', [App\Http\Controllers\Professor\RelatorioController::class, 'relatorioAluno'])
+     ->name('professor.relatorios.aluno');
 });
 
 

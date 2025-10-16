@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gerenciador de Exercicios</title>
+  <title>Gerenciador de Turmas</title>
   <link href="{{ asset('css/Professor/turmaProfessor.css') }}" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
@@ -14,7 +14,6 @@
 
   <main>
     <section class="intro">
-
         <a href="/professorDashboard" class="btn-voltar">
             <i class='bx bx-chevron-left'></i>
             Voltar
@@ -31,51 +30,57 @@
       <div class="turmas-header">
         <div>
           <h2>Minhas turmas</h2>
-          <p>Clique em uma turma para gerenciá-la</p>
+          <p>Acesse uma turma para gerenciar os detalhes.</p>
         </div>
         <form action="{{ url('/professorGerenciarEspecifica') }}" method="GET" class="search">
-          
           <input name="search" type="text" placeholder="Pesquisar turma..." value="{{ request('search') }}">
-          
           <button type="submit"><i class='bx bx-search'></i></button>
-          
-      </form>
+        </form>
       </div>
 
-      
       <div class="turmas-scroll">
         <div class="turmas-grid">
+            @forelse ($turmas as $turma)
+            <div class="card">
+                <!-- ===== DIV ADICIONAL AQUI ===== -->
+                <div class="card-body">
+                    <h3>{{ $turma->nome_turma }}</h3>
+                    <div class="tags">
+                        <span class="tag">{{ ucfirst($turma->turno) }}</span>
+                    </div>
+                    <p class="info">
+                        <i class='bx bxs-group'></i> 
+                        {{ $turma->alunos_count }} 
+                        {{ $turma->alunos_count == 1 ? 'Aluno' : 'Alunos' }}
+                    </p>
+                    <p class="info">
+                        <i class='bx bxs-book-content'></i> 
+                        {{ $turma->exercicios_count }} 
+                        {{ $turma->exercicios_count == 1 ? 'atividade' : 'atividades' }}
+                    </p>
+                </div>
 
-    @forelse ($turmas as $turma)
-    <a href="{{ route('turmas.especificaID', ['turma' => $turma->id]) }}" class="card-link">
-    <div class="card">
-        <h3>{{ $turma->nome_turma }}</h3>
-        <div class="tags">
-            <span class="tag">{{ ucfirst($turma->turno) }}</span>
+                <div class="card-actions">
+                    <a href="{{ route('professor.relatorios.index', $turma) }}" class="card-action-btn btn-report">
+                        <i class='bx bx-line-chart'></i> Relatórios
+                    </a>
+                    <a href="{{ route('turmas.especificaID', $turma) }}" class="card-action-btn btn-manage">
+                        <i class='bx bx-cog'></i> Gerenciar
+                    </a>
+                </div>
+            </div>
+            @empty
+                <p>Você ainda não criou nenhuma turma. Clique em "Adicionar turma" para começar!</p>
+            @endforelse
         </div>
-        <p class="info">
-      <i class='bx bxs-group'></i> 
-      {{ $turma->alunos_count }} 
-      {{ $turma->alunos_count == 1 ? 'Aluno' : 'Alunos' }}
-  </p>
-  <p class="info">
-      <i class='bx bxs-book-content'></i> 
-      {{ $turma->exercicios_count }} 
-      {{ $turma->exercicios_count == 1 ? 'atividade atribuída' : 'atividades atribuídas' }}
-  </p>
-      </div>
-  </a>
-    @empty
-        <p>Você ainda não criou nenhuma turma. Clique em "Adicionar turma" para começar!</p>
-    @endforelse
-    </div>
       </div>
 
-     <div class="ver-tudo">
-        <button  id="btnVerTudo">Ver tudo</button>
-      </div>
+       <div class="ver-tudo">
+         <button  id="btnVerTudo">Ver tudo</button>
+       </div>
     </section>
   </main>
+
 
   <div class="modal-overlay" id="modal">
   <div class="modal-content">

@@ -22,30 +22,27 @@
             </div>
         </header>
 
+        
         <section class="acoes-rapidas">
             <a href="{{ route('professor.turmas') }}" class="card-acao">
                 <i class='bx bxs-group'></i>
                 <h3>Gerenciar Turmas</h3>
-                <p>Crie, edite e adicione alunos às suas turmas.</p>
+                <p>Crie e edite suas turmas.</p>
             </a>
             <a href="{{ route('professor.exercicios.index') }}" class="card-acao">
                 <i class='bx bxs-spreadsheet'></i>
                 <h3>Criar Exercício</h3>
                 <p>Elabore e atribua novos exercícios.</p>
             </a>
+          
             <a href="{{ route('professor.avisos.create') }}" class="card-acao">
                 <i class='bx bxs-bell'></i>
                 <h3>Enviar Aviso</h3>
                 <p>Mande comunicados para uma ou mais turmas.</p>
             </a>
-            <a href="#" class="card-acao">
-                <i class='bx bx-line-chart'></i>
-                <h3>Ver Relatórios</h3>
-                <p>Acompanhe o desempenho dos alunos.</p>
-            </a>
         </section>
 
-         </section> @if($convitesPendentes > 0)
+        @if($convitesPendentes > 0)
             <div class="card-notificacao">
                 <i class='bx bxs-bell-ring'></i>
                 <div class="notificacao-content">
@@ -56,21 +53,28 @@
         @endif
 
         <div class="content-grid">
-
             <div class="coluna-principal">
                 <div class="card">
-                    <h2><i class='bx bx-list-ul'></i> Suas Turmas Recentes</h2>
+                    <h2><i class='bx bx-list-ul'></i> Suas Turmas</h2>
                     <div class="lista-turmas">
-                        @forelse($turmasRecentes as $turma)
+                        @forelse($turmas as $turma)
                             <div class="item-turma">
                                 <div class="info-turma">
                                     <strong>{{ $turma->nome_turma }}</strong>
                                     <small>{{ $turma->alunos_count }} {{ $turma->alunos_count == 1 ? 'aluno' : 'alunos' }}</small>
                                 </div>
-                                <a href="{{ route('professor.turma.especifica', $turma) }}" class="btn-gerenciar">Gerenciar</a>
+                                
+                                <div class="turma-actions">
+                                    <a href="{{ route('professor.relatorios.index', $turma) }}" class="btn-acao btn-relatorio">
+                                        <i class='bx bx-line-chart'></i> Relatórios
+                                    </a>
+                                    <a href="{{ route('turmas.especificaID', $turma) }}" class="btn-acao btn-gerenciar">
+                                        <i class='bx bx-cog'></i> Gerenciar
+                                    </a>
+                                </div>
                             </div>
                         @empty
-                            <p class="empty-message">Você ainda não criou nenhuma turma.</p>
+                            <p class="empty-message">Você ainda não criou nenhuma turma. <a href="{{ route('professor.turmas') }}">Criar agora</a></p>
                         @endforelse
                     </div>
                     <a href="{{ route('professor.turmas') }}" class="link-ver-todas">Ver todas as turmas <i class='bx bx-right-arrow-alt'></i></a>
@@ -106,10 +110,7 @@
                         <span class="numero">{{ $totalAulas }}</span>
                         <span class="descricao">Aulas Criadas</span>
                     </div>
-                    <div class="item-estatistica">
-                        <span class="numero">89%</span>
-                        <span class="descricao">Taxa de Conclusão (Exemplo)</span>
-                    </div>
+                 
                 </div>
             </div>
         </div>

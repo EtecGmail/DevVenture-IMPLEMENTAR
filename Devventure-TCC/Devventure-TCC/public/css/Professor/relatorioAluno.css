@@ -1,0 +1,225 @@
+/* ==========================================================
+   CONFIGURAÇÕES GLOBAIS E VARIÁVEIS
+   ========================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #00796b;
+    --primary-light: #e0f2f1;
+    --success-color: #22c55e; /* Verde para notas boas */
+    --warning-color: #f97316; /* Laranja para notas regulares */
+    --danger-color: #ef4444;  /* Vermelho para notas ruins */
+    --info-color: #3b82f6;    /* Azul para notas boas */
+    --light-gray: #f1f5f9;
+    --medium-gray: #e2e8f0;
+    --dark-gray: #475569;
+    --text-color: #1e293b;
+    --white-color: #ffffff;
+    --border-radius: 12px;
+    --box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+                  0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+/* ==========================================================
+   HEADER
+   ========================================================== */
+.reports-header {
+    background-color: var(--white-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    box-shadow: var(--box-shadow);
+    border-bottom: 3px solid var(--primary-color);
+}
+.back-link {
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: 0.3s;
+}
+.back-link:hover { color: var(--dark-gray); }
+.header-info h1 { margin: 0; font-size: 1.6rem; font-weight: 600; }
+.header-info p { margin: 0.3rem 0 0 0; font-size: 0.95rem; color: var(--dark-gray); }
+
+/* ==========================================================
+   LAYOUT GRID E CONTEÚDO PRINCIPAL (NOVO)
+   ========================================================== */
+.report-aluno-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    padding: 2rem;
+}
+@media (max-width: 1000px) {
+    .report-aluno-grid { grid-template-columns: 1fr; }
+}
+
+/* NOVO: Container para os cards principais para criar espaçamento */
+.report-main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* ==========================================================
+   CARDS E CONTAINERS
+   ========================================================== */
+.card {
+    background-color: var(--white-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+}
+.card-header {
+    background-color: var(--primary-light);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--medium-gray);
+}
+.card-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+.card-header i {
+    font-size: 1.4rem;
+    color: var(--primary-color);
+}
+
+/* ==========================================================
+   TABELAS
+   ========================================================== */
+.table-container { overflow-x: auto; }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+thead {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+}
+th, td {
+    padding: 0.9rem 1.5rem; /* Aumentado o padding lateral */
+    text-align: left;
+    border-bottom: 1px solid var(--medium-gray);
+}
+tbody tr:last-child td {
+    border-bottom: none; /* Remove a borda da última linha */
+}
+tbody tr:hover { background-color: var(--primary-light); }
+.empty-message {
+    text-align: center;
+    color: var(--dark-gray);
+    font-style: italic;
+    padding: 1.5rem 0;
+}
+
+/* ==========================================================
+   CONCEITOS (NOTAS) (NOVO)
+   ========================================================== */
+.conceito-tag {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: center;
+    min-width: 40px;
+}
+.conceito-mb {
+    background-color: var(--success-color);
+    color: var(--white-color);
+}
+.conceito-b {
+    background-color: var(--info-color);
+    color: var(--white-color);
+}
+.conceito-r {
+    background-color: var(--warning-color);
+    color: var(--white-color);
+}
+.conceito-i {
+    background-color: var(--danger-color);
+    color: var(--white-color);
+}
+
+
+/* ==========================================================
+   SIDEBAR (Resumo do Aluno)
+   ========================================================== */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+.summary-card {
+    text-align: center;
+    padding: 1.5rem;
+}
+.summary-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: 3px solid var(--primary-color);
+}
+.summary-card h3 {
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    color: var(--text-color);
+}
+.summary-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 1rem;
+}
+.stat-item strong {
+    display: block;
+    font-size: 1.3rem;
+    color: var(--primary-color);
+}
+.stat-item small {
+    color: var(--dark-gray);
+    font-size: 0.8rem;
+}
+
+/* ==========================================================
+   GRÁFICOS
+   ========================================================== */
+.chart-container {
+    position: relative;
+    height: 300px;
+    padding: 1rem;
+}
+@media (max-width: 600px) {
+    .chart-container { height: 250px; }
+}
+
+/* ==========================================================
+   ANIMAÇÕES E AJUSTES GERAIS
+   ========================================================== */
+.card, .summary-card {
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+.card:hover, .summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 12px -2px rgb(0 0 0 / 0.15);
+}
+html { scroll-behavior: smooth; }
+.reports-wrapper { min-height: 100vh; }
+main { margin-bottom: 3rem; }

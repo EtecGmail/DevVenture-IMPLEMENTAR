@@ -47,43 +47,38 @@
                 </form>
             </div>
 
-            <div class="exercicios-scroll">
-                <div class="exercicios-grid">
-                    @forelse ($exercicios as $exercicio)
-                         <a href="{{ route('professor.exercicios.respostas', $exercicio) }}" class="card">
-                            <h3>{{ $exercicio->turma->nome_turma }}</h3>
+           <div class="exercicios-grid">
+    @forelse ($exercicios as $exercicio)
+        <div class="card" data-url="{{ route('professor.exercicios.respostas', $exercicio) }}">
+            <h3>{{ $exercicio->turma->nome_turma }}</h3>
 
-                            <div class="tags">
-                                <span class="tag">{{ ucfirst($exercicio->turma->turno) }}</span>
-                                <span class="tag">{{ $exercicio->nome }}</span>
-                            </div>
-                            
-                            <p class="info">Abre em: {{ \Carbon\Carbon::parse($exercicio->data_publicacao)->format('d/m/Y H:i') }}</p>
-                            <p class="info">Fecha em: {{ \Carbon\Carbon::parse($exercicio->data_fechamento)->format('d/m/Y H:i') }}</p>
-                            <p class="info card-points"><strong>Pontos:</strong> {{ $exercicio->pontos ?? 0 }}</p>
+            <div class="tags">
+                <span class="tag">{{ ucfirst($exercicio->turma->turno) }}</span>
+                <span class="tag">{{ $exercicio->nome }}</span>
+            </div>
 
-                            <div class="anexos-card">
-                                @foreach($exercicio->imagensApoio as $imagem)
-                                    <img src="{{ asset('storage/' . $imagem->imagem_path) }}" alt="Imagem de apoio" class="imagem-apoio-preview">
-                                @endforeach
-                                @foreach($exercicio->arquivosApoio as $arquivo)
-                                    <div class="link-arquivo">
-                                        <i class='bx bxs-file-blank'></i>
-                                        <span>{{ $arquivo->nome_original }}</span>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </a>
-                    @empty
-                        <div class="sem-resultados">
-                            <p>Nenhum exercício encontrado para este filtro.</p>
-                        </div>
-                    @endforelse
-                </div>
+            <p class="info">Abre em: {{ \Carbon\Carbon::parse($exercicio->data_publicacao)->format('d/m/Y H:i') }}</p>
+            <p class="info">Fecha em: {{ \Carbon\Carbon::parse($exercicio->data_fechamento)->format('d/m/Y H:i') }}</p>
+            <p class="info card-points"><strong>Pontos:</strong> {{ $exercicio->pontos ?? 0 }}</p>
+
+            <div class="anexos-card">
+                @foreach($exercicio->imagensApoio as $imagem)
+                    <img src="{{ asset('storage/' . $imagem->imagem_path) }}" alt="Imagem de apoio" class="imagem-apoio-preview">
+                @endforeach
+                @foreach($exercicio->arquivosApoio as $arquivo)
+                    <a href="{{ asset('storage/' . $arquivo->arquivo_path) }}" class="link-arquivo" download>
+                        <i class='bx bxs-file-blank'></i>
+                        <span>{{ $arquivo->nome_original }}</span>
+                    </a>
+                @endforeach
             </div>
-            <div class="ver-tudo">
-                <button id="btnVerTudo">Ver tudo</button>
-            </div>
+        </div>
+    @empty
+        <p class="sem-exercicios">Nenhum exercício encontrado.</p>
+    @endforelse
+</div>
+</div>
+
         </section>
     </main>
 
@@ -177,6 +172,8 @@
             }
         </script>
     @endif
+
+    
 
     @if (session('sweet_success'))
     <script>

@@ -185,3 +185,69 @@ body {
 .coluna-principal .card + .card {
     margin-top: 2.5rem; /* ou o valor do 'gap' do seu grid */
 }
+
+.item-turma {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.item-turma:last-of-type {
+    border-bottom: none;
+}
+
+.turma-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-shrink: 0; /* Impede que os botões encolham em telas menores */
+}
+
+.btn-acao {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+/* Estilo para o botão "Gerenciar" */
+.btn-gerenciar {
+    background-color: var(--cor-primaria);
+    color: white;
+}
+
+.btn-gerenciar:hover {
+    background-color: var(--cor-primaria-hover);
+}
+
+/* Estilo para o botão "Relatórios" (estilo secundário/outline) */
+.btn-relatorio {
+    background-color: transparent;
+    color: var(--cor-primaria);
+    border-color: var(--cor-primaria);
+}
+
+.btn-relatorio:hover {
+    background-color: var(--cor-destaque-claro);
+}
+
+/* O link "Ver todas as turmas" que já existia */
+.link-ver-todas {
+    display: block;
+    text-align: right;
+    margin-top: 1rem;
+    font-weight: 600;
+    color: var(--cor-primaria);
+    text-decoration: none;
+}
+.link-ver-todas i {
+    vertical-align: middle;
+}

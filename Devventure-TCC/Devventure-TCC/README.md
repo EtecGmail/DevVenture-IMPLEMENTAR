@@ -83,6 +83,7 @@ Utilize o Pint para manter a padronização:
 ```bash
 git clone https://github.com/EtecGmail/EtecGmail-Devventure-TCC.git
 cd Devventure-TCC
+cd Devventure-TCC
 composer install
 cp .env.example .env
 php artisan key:generate

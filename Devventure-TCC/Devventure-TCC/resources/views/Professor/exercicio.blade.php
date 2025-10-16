@@ -50,12 +50,14 @@
             <div class="exercicios-scroll">
                 <div class="exercicios-grid">
                     @forelse ($exercicios as $exercicio)
-                        <div class="card">
+                         <a href="{{ route('professor.exercicios.respostas', $exercicio) }}" class="card">
                             <h3>{{ $exercicio->turma->nome_turma }}</h3>
+
                             <div class="tags">
                                 <span class="tag">{{ ucfirst($exercicio->turma->turno) }}</span>
                                 <span class="tag">{{ $exercicio->nome }}</span>
                             </div>
+                            
                             <p class="info">Abre em: {{ \Carbon\Carbon::parse($exercicio->data_publicacao)->format('d/m/Y H:i') }}</p>
                             <p class="info">Fecha em: {{ \Carbon\Carbon::parse($exercicio->data_fechamento)->format('d/m/Y H:i') }}</p>
                             <p class="info card-points"><strong>Pontos:</strong> {{ $exercicio->pontos ?? 0 }}</p>
@@ -65,13 +67,13 @@
                                     <img src="{{ asset('storage/' . $imagem->imagem_path) }}" alt="Imagem de apoio" class="imagem-apoio-preview">
                                 @endforeach
                                 @foreach($exercicio->arquivosApoio as $arquivo)
-                                    <a href="{{ asset('storage/' . $arquivo->arquivo_path) }}" target="_blank" class="link-arquivo">
+                                    <div class="link-arquivo">
                                         <i class='bx bxs-file-blank'></i>
                                         <span>{{ $arquivo->nome_original }}</span>
-                                    </a>
+                                    </div>
                                 @endforeach
                             </div>
-                        </div>
+                        </a>
                     @empty
                         <div class="sem-resultados">
                             <p>Nenhum exercício encontrado para este filtro.</p>
@@ -85,16 +87,12 @@
         </section>
     </main>
 
-    
-
     <div class="modal-overlay" id="modal">
         <div class="modal-content">
 
-            <!-- ========================================================== -->
-            <!-- ===== BLOCO DE ERROS MOVIDO PARA DENTRO DO MODAL AQUI ===== -->
-            <!-- ========================================================== -->
+            
             @if ($errors->any())
-                <div style="background-color: #f8d7da; color: #721c24; padding: 1rem; border-radius: 0.25rem; margin-bottom: 1rem;">
+                <div style="background-color: #f8d7da; color: #721c24; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
                     <strong>Ops! Ocorreram alguns erros:</strong>
                     <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
                         @foreach ($errors->all() as $error)
@@ -108,7 +106,6 @@
                 @csrf
                 <h2>Criar Exercício</h2>
 
-                {{-- O RESTO DO SEU FORMULÁRIO CONTINUA EXATAMENTE IGUAL --}}
                 <div class="form-group">
                     <label for="nome">Nome do Exercício</label>
                     <input id="nome" name="nome" type="text" placeholder="Ex: Atividade sobre Funções" required />
@@ -168,7 +165,9 @@
 
     <script src="{{ asset('js/Professor/exercicioProfessor.js') }}"></script>
 
-    {{-- Script para reabrir o modal se houver erros --}}
+    <!-- ========================================================== -->
+    <!-- ===== SCRIPT PARA REABRIR O MODAL SE HOUVER ERROS ===== -->
+    <!-- ========================================================== -->
     @if ($errors->any())
         <script>
             // Pega o modal e o exibe imediatamente
@@ -179,7 +178,6 @@
         </script>
     @endif
 
-    {{-- Seu SweetAlert de sucesso --}}
     @if (session('sweet_success'))
     <script>
         Swal.fire({

@@ -131,6 +131,10 @@ Route::middleware(['auth:professor'])->group(function () {
      ->name('professor.turma.ranking');
     Route::get('/professor/avisos/criar', [AvisoController::class, 'create'])->name('professor.avisos.create');
     Route::post('/professor/avisos', [AvisoController::class, 'store'])->name('professor.avisos.store');
+    Route::get('/professor/exercicios/{exercicio}/respostas', [App\Http\Controllers\Professor\ExercicioController::class, 'mostrarRespostas'])
+     ->name('professor.exercicios.respostas');
+    Route::post('/professor/respostas/{resposta}/avaliar', [App\Http\Controllers\Professor\ExercicioController::class, 'avaliarResposta'])
+     ->name('professor.respostas.avaliar');
 });
 
 

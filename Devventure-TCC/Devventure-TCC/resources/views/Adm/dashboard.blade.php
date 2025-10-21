@@ -4,11 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    
+    <meta name="color-scheme" content="dark light">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
+    <script>
+        (function () {
+            const storageKey = 'theme';
+            const doc = document.documentElement;
+            const mode = localStorage.getItem(storageKey);
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (mode === 'light' || mode === 'dark') {
+                doc.dataset.theme = mode;
+            } else if (mode === 'auto' || mode === null) {
+                doc.dataset.theme = systemPrefersDark ? 'dark' : 'light';
+            }
+        })();
+    </script>
+    <link rel="preload" href="{{ asset('js/theme-manager.js') }}" as="script">
     <link href="{{ asset('css/Adm/admDashboard.css') }}" rel="stylesheet">
 </head>
 <body>
@@ -43,6 +58,7 @@
                     <span class="navbar-title">Dashboard Administrativo</span>
                 </div>
                 <div class="nav-right">
+                    @include('partials.theme-toggle')
                     <span class="admin-name">Olá, Admin!</span>
                     <div class="admin-avatar">
                         <img src="{{ asset('images/user.png') }}" alt="Admin Avatar">
@@ -123,16 +139,16 @@
                                         <td>
                                             <a href="#" class="btn-icon" title="Ver Detalhes do Aluno"><i class="fas fa-eye"></i></a>
                                             @if ($aluno->status === 'ativo')
-                                                <form action="{{ route('admin.alunos.block', $aluno->id) }}" method="POST" style="display: inline;" 
+                                                <form action="{{ route('admin.alunos.block', $aluno->id) }}" method="POST" style="display: inline;"
                                                       class="form-confirm" data-action-text="bloquear" data-user-name="{{ $aluno->nome }}">
                                                     @csrf
-                                                    <button type="submit" class="btn-icon" title="Bloquear Aluno"><i class="fas fa-ban" style="color: #e53e3e;"></i></button>
+                                                    <button type="submit" class="btn-icon" title="Bloquear Aluno"><i class="fas fa-ban text-danger"></i></button>
                                                 </form>
                                             @else
                                                 <form action="{{ route('admin.alunos.unblock', $aluno->id) }}" method="POST" style="display: inline;"
                                                       class="form-confirm" data-action-text="desbloquear" data-user-name="{{ $aluno->nome }}">
                                                     @csrf
-                                                    <button type="submit" class="btn-icon" title="Desbloquear Aluno"><i class="fas fa-check-circle" style="color: #48bb78;"></i></button>
+                                                    <button type="submit" class="btn-icon" title="Desbloquear Aluno"><i class="fas fa-check-circle text-success"></i></button>
                                                 </form>
                                             @endif
                                         </td>
@@ -191,13 +207,13 @@
                                                 <form action="{{ route('admin.professores.block', $professor->id) }}" method="POST" style="display: inline;"
                                                       class="form-confirm" data-action-text="bloquear" data-user-name="{{ $professor->nome }}">
                                                     @csrf
-                                                    <button type="submit" class="btn-icon" title="Bloquear Professor"><i class="fas fa-ban" style="color: #e53e3e;"></i></button>
+                                                    <button type="submit" class="btn-icon" title="Bloquear Professor"><i class="fas fa-ban text-danger"></i></button>
                                                 </form>
                                             @else
                                                 <form action="{{ route('admin.professores.unblock', $professor->id) }}" method="POST" style="display: inline;"
                                                       class="form-confirm" data-action-text="desbloquear" data-user-name="{{ $professor->nome }}">
                                                     @csrf
-                                                    <button type="submit" class="btn-icon" title="Desbloquear Professor"><i class="fas fa-check-circle" style="color: #48bb78;"></i></button>
+                                                    <button type="submit" class="btn-icon" title="Desbloquear Professor"><i class="fas fa-check-circle text-success"></i></button>
                                                 </form>
                                             @endif
                                         </td>
@@ -245,6 +261,7 @@
             professoresCount: {{ $professoresCount ?? 0 }},
         };
     </script>
+    <script src="{{ asset('js/theme-manager.js') }}" defer></script>
     <script src="{{ asset('js/Adm/admDashboard.js') }}"></script>
 </body>
 </html>

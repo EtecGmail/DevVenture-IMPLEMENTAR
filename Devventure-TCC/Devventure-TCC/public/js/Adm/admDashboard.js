@@ -3,12 +3,74 @@ document.addEventListener('DOMContentLoaded', function() {
     const sections = document.querySelectorAll('.dashboard-section');
     const navLinks = document.querySelectorAll('.sidebar-nav ul li a');
     const menuToggle = document.getElementById('menuToggle');
+    const themeButtons = document.querySelectorAll('[data-set-theme]');
+    const themeStatus = document.querySelector('[data-theme-status]');
     let activeCharts = [];
+    let currentSectionId = 'overview';
+
+    function themeColors() {
+        const styles = getComputedStyle(document.documentElement);
+        const read = (token) => styles.getPropertyValue(token).trim();
+        return {
+            bg: read('--bg') || '#ffffff',
+            fg: read('--fg') || '#1f2933',
+            muted: read('--muted') || '#e6ebf5',
+            mutedFg: read('--muted-fg') || '#52606d',
+            border: read('--border') || '#d5dce6',
+            cardBg: read('--card-bg') || '#ffffff',
+            accent: read('--accent') || '#3f51b5',
+            chartAccent: read('--chart-accent') || '#3f83f8',
+            chartMuted: read('--chart-muted') || '#94a3b8'
+        };
+    }
+
+    function updateThemeControls(detail) {
+        if (!window.Theme) {
+            return;
+        }
+        const mode = Theme.read();
+        const resolved = detail?.resolved || Theme.resolved();
+        const labelMap = {
+            light: 'Tema: Claro',
+            dark: 'Tema: Escuro',
+            auto: 'Tema: Automático'
+        };
+
+        themeButtons.forEach(button => {
+            const isActive = button.dataset.setTheme === mode;
+            button.classList.toggle('is-active', isActive);
+            button.setAttribute('aria-pressed', String(isActive));
+        });
+
+        if (themeStatus) {
+            if (mode === 'auto') {
+                const resolvedLabel = resolved === 'dark' ? 'Escuro' : 'Claro';
+                themeStatus.textContent = `${labelMap[mode]} (${resolvedLabel})`;
+            } else {
+                themeStatus.textContent = labelMap[resolved] || labelMap[mode];
+            }
+        }
+    }
+
+    if (window.Theme) {
+        Theme.init();
+        updateThemeControls();
+        themeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                Theme.set(button.dataset.setTheme);
+            });
+        });
+        window.addEventListener('themechange', (event) => {
+            updateThemeControls(event.detail);
+            initSectionCharts(currentSectionId);
+        });
+    }
 
     //-----------------------------------------
     //  FUNÇÃO PRINCIPAL PARA TROCAR DE ABA
     //-----------------------------------------
     function showSection(targetId) {
+        currentSectionId = targetId;
         // 1. Atualiza os links da barra lateral
         navLinks.forEach(item => {
             if (item.getAttribute('href') === '#' + targetId) {
@@ -97,26 +159,77 @@ document.addEventListener('DOMContentLoaded', function() {
             { value: alunosCount, name: 'Alunos' },
             { value: professoresCount, name: 'Professores' }
         ];
+        const colors = themeColors();
+        const palette = [colors.chartAccent, colors.chartMuted];
+        const textStyle = { color: colors.mutedFg };
+        const axisStyle = {
+            axisLine: { lineStyle: { color: colors.border } },
+            axisTick: { lineStyle: { color: colors.border } },
+            axisLabel: { color: colors.mutedFg }
+        };
+        const splitLine = { lineStyle: { color: colors.border } };
 
         if (sectionId === 'overview') {
             if (document.getElementById('alunosProfessoresChart')) {
                 const alunosProfessoresChart = echarts.init(document.getElementById('alunosProfessoresChart'));
                 alunosProfessoresChart.setOption({
+                    backgroundColor: colors.cardBg,
+                    textStyle,
                     tooltip: { trigger: 'item', formatter: '{a} <br/>{b} : {c} ({d}%)' },
-                    legend: { orient: 'vertical', left: 'left', data: ['Alunos', 'Professores'] },
-                    series: [{ name: 'Contagem', type: 'pie', radius: '50%', data: alunosProfessoresChartData, emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.5)' } } }],
-                    color: ['#4299e1', '#a0aec0']
+                    legend: { orient: 'vertical', left: 'left', data: ['Alunos', 'Professores'], textStyle },
+                    series: [{
+                        name: 'Contagem',
+                        type: 'pie',
+                        radius: '50%',
+                        data: alunosProfessoresChartData,
+                        emphasis: {
+                            itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.3)' }
+                        },
+                        label: { color: colors.fg }
+                    }],
+                    color: palette
                 });
                 activeCharts.push(alunosProfessoresChart);
             }
             if (document.getElementById('overviewBarChart')) {
                 const overviewBarChart = echarts.init(document.getElementById('overviewBarChart'));
                 overviewBarChart.setOption({
-                    title: { text: 'Alunos vs Professores', subtext: 'Contagem Absoluta', left: 'center', textStyle: { fontSize: 14 }, subtextStyle: { fontSize: 10 } },
+                    backgroundColor: colors.cardBg,
+                    textStyle,
+                    title: {
+                        text: 'Alunos vs Professores',
+                        subtext: 'Contagem Absoluta',
+                        left: 'center',
+                        textStyle: { fontSize: 14, color: colors.fg },
+                        subtextStyle: { fontSize: 10, color: colors.mutedFg }
+                    },
                     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
-                    xAxis: { type: 'category', data: ['Alunos', 'Professores'], axisLabel: { fontSize: 10, fontWeight: 'bold' } },
-                    yAxis: { type: 'value', name: 'Número de Usuários', nameLocation: 'middle', nameGap: 25, axisLabel: { formatter: '{value}' } },
-                    series: [{ name: 'Quantidade', type: 'bar', data: [{ value: alunosCount, name: 'Alunos', itemStyle: { color: '#4299e1' } }, { value: professoresCount, name: 'Professores', itemStyle: { color: '#a0aec0' } }], barWidth: '50%', emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.5)' } }, label: { show: true, position: 'top', formatter: '{c}', fontSize: 10 } }]
+                    xAxis: {
+                        type: 'category',
+                        data: ['Alunos', 'Professores'],
+                        axisLabel: { fontSize: 10, fontWeight: 'bold', color: colors.fg },
+                        axisLine: axisStyle.axisLine,
+                        axisTick: axisStyle.axisTick
+                    },
+                    yAxis: {
+                        type: 'value',
+                        name: 'Número de Usuários',
+                        nameLocation: 'middle',
+                        nameGap: 25,
+                        axisLabel: { formatter: '{value}', color: colors.mutedFg },
+                        splitLine
+                    },
+                    series: [{
+                        name: 'Quantidade',
+                        type: 'bar',
+                        data: [
+                            { value: alunosCount, name: 'Alunos', itemStyle: { color: palette[0] } },
+                            { value: professoresCount, name: 'Professores', itemStyle: { color: palette[1] } }
+                        ],
+                        barWidth: '50%',
+                        emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.3)' } },
+                        label: { show: true, position: 'top', formatter: '{c}', fontSize: 10, color: colors.fg }
+                    }]
                 });
                 activeCharts.push(overviewBarChart);
             }
@@ -125,22 +238,75 @@ document.addEventListener('DOMContentLoaded', function() {
             if (document.getElementById('userDistributionPieChart')) {
                 const userDistributionPieChart = echarts.init(document.getElementById('userDistributionPieChart'));
                 userDistributionPieChart.setOption({
-                    title: { text: 'Alunos vs Professores', subtext: 'Proporção Geral', left: 'center' },
+                    backgroundColor: colors.cardBg,
+                    textStyle,
+                    title: {
+                        text: 'Alunos vs Professores',
+                        subtext: 'Proporção Geral',
+                        left: 'center',
+                        textStyle: { color: colors.fg },
+                        subtextStyle: { color: colors.mutedFg }
+                    },
                     tooltip: { trigger: 'item', formatter: '{a} <br/>{b} : {c} ({d}%)' },
-                    legend: { orient: 'vertical', left: 'left', top: 'bottom', data: ['Alunos', 'Professores'] },
-                    series: [{ name: 'Distribuição', type: 'pie', radius: '55%', center: ['50%', '60%'], data: alunosProfessoresChartData, emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.5)' } }, label: { formatter: '{b}: {c} ({d}%)' } }],
-                    color: ['#4299e1', '#a0aec0']
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                        top: 'bottom',
+                        data: ['Alunos', 'Professores'],
+                        textStyle
+                    },
+                    series: [{
+                        name: 'Distribuição',
+                        type: 'pie',
+                        radius: '55%',
+                        center: ['50%', '60%'],
+                        data: alunosProfessoresChartData,
+                        emphasis: {
+                            itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.3)' }
+                        },
+                        label: { formatter: '{b}: {c} ({d}%)', color: colors.fg }
+                    }],
+                    color: palette
                 });
                 activeCharts.push(userDistributionPieChart);
             }
             if (document.getElementById('userDistributionBarChart')) {
                 const userDistributionBarChart = echarts.init(document.getElementById('userDistributionBarChart'));
                 userDistributionBarChart.setOption({
-                    title: { text: 'Alunos vs Professores', subtext: 'Contagem Absoluta', left: 'center' },
+                    backgroundColor: colors.cardBg,
+                    textStyle,
+                    title: {
+                        text: 'Alunos vs Professores',
+                        subtext: 'Contagem Absoluta',
+                        left: 'center',
+                        textStyle: { color: colors.fg },
+                        subtextStyle: { color: colors.mutedFg }
+                    },
                     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
-                    xAxis: { type: 'category', data: ['Alunos', 'Professores'], axisLabel: { fontSize: 12, fontWeight: 'bold' } },
-                    yAxis: { type: 'value', name: 'Número de Usuários', axisLabel: { formatter: '{value}' } },
-                    series: [{ name: 'Quantidade', type: 'bar', data: [{ value: alunosCount, name: 'Alunos', itemStyle: { color: '#4299e1' } }, { value: professoresCount, name: 'Professores', itemStyle: { color: '#a0aec0' } }], barWidth: '40%', emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.5)' } }, label: { show: true, position: 'top', formatter: '{c}' } }]
+                    xAxis: {
+                        type: 'category',
+                        data: ['Alunos', 'Professores'],
+                        axisLabel: { fontSize: 12, fontWeight: 'bold', color: colors.fg },
+                        axisLine: axisStyle.axisLine,
+                        axisTick: axisStyle.axisTick
+                    },
+                    yAxis: {
+                        type: 'value',
+                        name: 'Número de Usuários',
+                        axisLabel: { formatter: '{value}', color: colors.mutedFg },
+                        splitLine
+                    },
+                    series: [{
+                        name: 'Quantidade',
+                        type: 'bar',
+                        data: [
+                            { value: alunosCount, name: 'Alunos', itemStyle: { color: palette[0] } },
+                            { value: professoresCount, name: 'Professores', itemStyle: { color: palette[1] } }
+                        ],
+                        barWidth: '40%',
+                        emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.3)' } },
+                        label: { show: true, position: 'top', formatter: '{c}', color: colors.fg }
+                    }]
                 });
                 activeCharts.push(userDistributionBarChart);
             }
